@@ -29,7 +29,40 @@ class Perfil(models.Model):
             self.nivel = 'Plata'
         else:
             self.nivel = 'Bronce'
-    
+
+
+class Promocion(models.Model):
+    NIVELES = Perfil.NIVELES
+
+    titulo = models.CharField(max_length=150)
+    descripcion = models.TextField()
+    nivel_minimo = models.CharField(
+        max_length=10,
+        choices=NIVELES,
+        default='Bronce',
+        help_text="Nivel mínimo del cliente para acceder a la promoción.",
+    )
+    descuento_porcentaje = models.PositiveIntegerField(
+        help_text="Porcentaje de descuento aproximado que ofrece la promoción."
+    )
+    activa = models.BooleanField(default=True)
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.titulo
+
+    def es_vigente(self):
+        from django.utils import timezone
+
+        hoy = timezone.now().date()
+        if self.fecha_inicio and hoy < self.fecha_inicio:
+            return False
+        if self.fecha_fin and hoy > self.fecha_fin:
+            return False
+        return self.activa
+
+
 class Pedido(models.Model):
 
     TIPOS = (

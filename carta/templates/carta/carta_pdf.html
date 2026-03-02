@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Carta del restaurante</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .categoria {
+            margin-top: 20px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .producto {
+            margin-top: 5px;
+        }
+
+        .precio {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carta del Restaurante</h1>
+    <p style="text-align:center;">Listado de platos disponibles</p>
+
+    {% for categoria in categorias %}
+        <div class="categoria">
+            <h2>{{ categoria.nombre }}</h2>
+        </div>
+
+        {% for producto in productos %}
+            {% if producto.categoria_id == categoria.id %}
+                <div class="producto">
+                    <strong>{{ producto.nombre }}</strong>
+                    <span class="precio">${{ producto.precio }}</span><br>
+                    <span>{{ producto.descripcion }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>
+
