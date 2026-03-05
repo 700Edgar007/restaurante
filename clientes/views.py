@@ -16,6 +16,74 @@ from .forms import RegistroUsuarioForm
 from .models import OportunidadRuleta, Pedido, Perfil, PremioCliente, Promocion
 
 
+AVATAR_ESTILOS = [
+    ('initials', 'Iniciales'),
+    ('avataaars', 'Avataar clasico'),
+    ('bottts', 'Robot'),
+    ('identicon', 'Identicon'),
+    ('adventurer', 'Aventurero'),
+    ('pixel-art', 'Pixel art'),
+]
+
+
+RULETA_PREMIOS = [
+    {
+        'etiqueta': '5% descuento',
+        'tipo': 'DESCUENTO',
+        'valor': 5,
+        'descripcion': '5% de descuento en tu siguiente pedido',
+        'peso': 26,
+    },
+    {
+        'etiqueta': '10% descuento',
+        'tipo': 'DESCUENTO',
+        'valor': 10,
+        'descripcion': '10% de descuento en tu siguiente pedido',
+        'peso': 20,
+    },
+    {
+        'etiqueta': '+15 puntos',
+        'tipo': 'PUNTOS',
+        'valor': 15,
+        'descripcion': '15 puntos extra de fidelidad',
+        'peso': 18,
+    },
+    {
+        'etiqueta': '+30 puntos',
+        'tipo': 'PUNTOS',
+        'valor': 30,
+        'descripcion': '30 puntos extra de fidelidad',
+        'peso': 16,
+    },
+    {
+        'etiqueta': 'Giro extra',
+        'tipo': 'GIRO',
+        'valor': 1,
+        'descripcion': 'Giro adicional para volver a intentar',
+        'peso': 12,
+    },
+    {
+        'etiqueta': '20% descuento',
+        'tipo': 'DESCUENTO',
+        'valor': 20,
+        'descripcion': '20% de descuento en tu siguiente pedido',
+        'peso': 8,
+    },
+]
+
+
+def _normalizar_oportunidades_ruleta(perfil):
+    perfil.oportunidades_ruleta.filter(
+        accion__startswith='bonus_spin_',
+        usada=False,
+    ).update(
+        usada=True,
+        premio='Ajuste de sistema',
+        usada_en=timezone.now(),
+        puntos_otorgados=0,
+    )
+
+
 def registro_usuario(request):
     if request.user.is_authenticated:
         return redirect('lista_productos')
@@ -43,6 +111,23 @@ def mi_perfil(request):
         return redirect('panel_gestion')
 
     perfil, _ = Perfil.objects.get_or_create(usuario=request.user)
+    _normalizar_oportunidades_ruleta(perfil)
+
+    if request.method == 'POST':
+        estilo = request.POST.get('avatar_estilo', 'initials').strip()
+        semilla = request.POST.get('avatar_semilla', '').strip()[:120]
+        estilos_validos = {item[0] for item in AVATAR_ESTILOS}
+        if estilo not in estilos_validos:
+            estilo = 'initials'
+
+        if not semilla:
+            semilla = request.user.username
+
+        perfil.avatar_estilo = estilo
+        perfil.avatar_semilla = semilla
+        perfil.save(update_fields=['avatar_estilo', 'avatar_semilla'])
+        messages.success(request, 'Avatar actualizado correctamente.')
+        return redirect('mi_perfil')
 
     pedidos = (
         Pedido.objects.filter(cliente=perfil)
@@ -58,9 +143,24 @@ def mi_perfil(request):
         if promo.es_vigente()
     ]
 
-    oportunidades_disponibles = perfil.oportunidades_ruleta.filter(usada=False)
+    oportunidades_disponibles = perfil.oportunidades_ruleta.filter(
+        usada=False,
+    ).exclude(accion__startswith='bonus_spin_')
     historial_ruleta = perfil.oportunidades_ruleta.filter(usada=True)[:5]
-    premios = perfil.premios.filter(activo=True, usado=False)
+    premios_qs = perfil.premios.filter(activo=True, usado=False)
+    premios_count = premios_qs.count()
+    premios = premios_qs[:20]
+
+    objetivo_compra = (int(total_gastado // Decimal('100000')) + 1) * Decimal('100000')
+    faltante_compra_bono = max(Decimal('0.00'), objetivo_compra - total_gastado)
+    avatar_sugerencias = [
+        {
+            'codigo': codigo,
+            'nombre': nombre,
+            'url': f"https://api.dicebear.com/8.x/{codigo}/svg?seed={request.user.username}",
+        }
+        for codigo, nombre in AVATAR_ESTILOS
+    ]
 
     return render(
         request,
@@ -74,6 +174,12 @@ def mi_perfil(request):
             "oportunidades_disponibles": oportunidades_disponibles,
             "historial_ruleta": historial_ruleta,
             'premios': premios,
+            'premios_count': premios_count,
+            'ruleta_premios': RULETA_PREMIOS,
+            'faltante_compra_bono': faltante_compra_bono,
+            'objetivo_compra': objetivo_compra,
+            'avatar_sugerencias': avatar_sugerencias,
+            'avatar_estilos': AVATAR_ESTILOS,
         },
     )
 
@@ -185,38 +291,57 @@ def otorgar_premio(request, perfil_id):
 @require_POST
 def girar_ruleta(request):
     perfil: Perfil = request.user.perfil
-    oportunidad = perfil.oportunidades_ruleta.filter(usada=False).order_by('creada_en').first()
+    _normalizar_oportunidades_ruleta(perfil)
+    oportunidad = (
+        perfil.oportunidades_ruleta.filter(usada=False)
+        .exclude(accion__startswith='bonus_spin_')
+        .order_by('creada_en')
+        .first()
+    )
 
     if not oportunidad:
         return JsonResponse({'ok': False, 'error': 'No tienes giros disponibles.'}, status=400)
 
-    premios = [
-        ('10 puntos extra', 10),
-        ('20 puntos extra', 20),
-        ('30 puntos extra', 30),
-        ('50 puntos extra', 50),
-        ('Doble puntos en tu siguiente pedido', 40),
-        ('Postre de cortesia', 25),
-    ]
-    indice = random.randint(0, len(premios) - 1)
-    premio_texto, puntos = premios[indice]
+    pesos = [premio['peso'] for premio in RULETA_PREMIOS]
+    premio = random.choices(RULETA_PREMIOS, weights=pesos, k=1)[0]
+    indice = RULETA_PREMIOS.index(premio)
+    puntos_ganados = 0
 
-    perfil.puntos += puntos
-    perfil.actualizar_nivel()
-    perfil.save()
+    if premio['tipo'] == 'PUNTOS':
+        puntos_ganados = premio['valor']
+        perfil.puntos += int(puntos_ganados)
+        perfil.actualizar_nivel()
+        perfil.save()
+    elif premio['tipo'] == 'DESCUENTO':
+        PremioCliente.objects.create(
+            perfil=perfil,
+            tipo='DESCUENTO',
+            descripcion=f"Premio ruleta: {premio['descripcion']}",
+            descuento_porcentaje=premio['valor'],
+            activo=True,
+            usado=False,
+        )
+    elif premio['tipo'] == 'GIRO':
+        contador = perfil.oportunidades_ruleta.filter(accion__startswith='extra_spin_').count() + 1
+        OportunidadRuleta.objects.create(
+            perfil=perfil,
+            accion=f'extra_spin_{contador}',
+        )
 
     oportunidad.usada = True
     oportunidad.usada_en = timezone.now()
-    oportunidad.premio = premio_texto
-    oportunidad.puntos_otorgados = puntos
+    oportunidad.premio = premio['etiqueta']
+    oportunidad.puntos_otorgados = puntos_ganados
     oportunidad.save(update_fields=['usada', 'usada_en', 'premio', 'puntos_otorgados'])
-    giros_restantes = perfil.oportunidades_ruleta.filter(usada=False).count()
+    giros_restantes = perfil.oportunidades_ruleta.filter(usada=False).exclude(accion__startswith='bonus_spin_').count()
 
     return JsonResponse(
         {
             'ok': True,
-            'premio': premio_texto,
-            'puntos': puntos,
+            'premio': premio['etiqueta'],
+            'descripcion_premio': premio['descripcion'],
+            'tipo_premio': premio['tipo'],
+            'puntos': puntos_ganados,
             'segmento': indice,
             'puntos_totales': perfil.puntos,
             'nivel': perfil.nivel,

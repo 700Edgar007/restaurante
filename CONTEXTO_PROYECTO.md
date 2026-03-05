@@ -22,7 +22,7 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
 
 ### 3.1 Fidelizacion
 
-- Sistema de puntos por pedido completado (en general 1 punto por unidad monetaria del total final).
+- Sistema de puntos por pedido completado (1 punto por cada 1,000 de compra para evitar inflacion de puntos).
 - Niveles de cliente:
   - Bronce
   - Plata
@@ -50,7 +50,14 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
 - Login ajustado:
   - Inicio de sesion con correo electronico + contrasena.
 - Carrito y checkout funcional.
+- Carrito mejorado:
+  - Selector de cantidad al agregar producto desde la carta.
+  - Controles rapidos +/- para ajustar cantidad.
+  - Edicion de cantidades dentro del carrito (actualizar o quitar item).
+  - Resumen visual en navegacion con total de unidades y total de productos distintos.
 - Confirmacion de pedido con datos de descuento/promocion aplicada.
+- Checkout con aviso preventivo:
+  - Si el usuario nuevo aun no reclama su giro de bienvenida, al confirmar pedido aparece modal para ir primero a la ruleta o continuar.
 - Perfil de cliente con:
   - Puntos actuales
   - Nivel
@@ -58,9 +65,14 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
   - Promociones vigentes
   - Ruleta e historial de premios
   - Premios pendientes otorgados por administracion
+  - Tabla clara de recompensas posibles de ruleta (porcentaje, puntos y giro extra)
+  - Avatar personalizable con estilo y semilla
+  - Avatar por defecto automatico (DiceBear)
 - Ubicacion del cliente:
   - Guardado de direccion + coordenadas desde mapa en perfil.
   - Edicion de ubicacion tambien desde carrito.
+  - Busqueda de direccion en mapa con geocodificacion (Nominatim) desde perfil y carrito.
+  - Al escribir una direccion y buscar, el mapa se centra automaticamente en el punto encontrado.
 - Correccion importante:
   - Si un superusuario no tenia `Perfil`, ahora se crea automaticamente al entrar a `mi_perfil`.
   - Ajuste posterior:
@@ -97,6 +109,10 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
 - Descarga en PDF desde `carta-pdf/`.
 - Usa `xhtml2pdf` para generar el archivo.
 - Dependencia instalada en venv para evitar error de modulo faltante.
+- Vista previa en modal desde la carta (sin descarga forzada).
+- Opcion de descarga manual cuando el usuario la solicita.
+- Diseno de PDF actualizado con cabecera de marca, categorias destacadas y tabla de platos.
+- Ajuste tecnico de seguridad para permitir previsualizacion embebida same-origin (evita rechazo en iframe local).
 
 ### 3.5 Diseno/UI
 
@@ -111,10 +127,27 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
   - Perfil
 - Mejoras recientes de interfaz:
   - Barra superior con botones mas visibles y grandes.
+  - Menu lateral izquierdo fijo de alto completo (estilo panel tipo Gmail).
+  - Sidebar auto-colapsable por hover:
+    - Estado reposo: retraido con solo iconos.
+    - Al pasar el mouse/focus: se despliega mostrando etiquetas y submenus.
+  - Tooltips en modo retraido para identificar rapidamente cada icono.
+  - Contenedor principal ampliado para aprovechar mejor pantallas grandes.
+  - Vista de perfil reestructurada como dashboard (tarjetas KPI + columnas balanceadas).
+  - Checkout y confirmacion rediseñados con resumen lateral y tarjetas de informacion clave.
+  - Ranking reforzado con KPI superiores para lectura rapida de lideres.
+  - Ajuste visual global a estilo minimalista y limpio.
+  - Estilo unificado de componentes base (cards, botones, formularios).
+  - Pulido de pantallas de acceso y gestion (login, registro, panel, crear/editar producto).
+  - Carrito reestructurado con resumen lateral para mejor lectura.
+  - Podio de ranking escalonado por altura (1ro arriba, 2do medio, 3ro mas bajo).
+  - Submenu en "Catalogos":
+    - Carta local
+    - Comida premium extranjera (API)
   - Boton directo para volver a productos desde cualquier vista.
   - Integracion de iconos con `bootstrap-icons`.
   - Imagenes de productos ajustadas a un tamano mas pequeno.
-  - Ruleta redisenada (menos plana) con relieve visual e iconografia.
+  - Ruleta redisenada con segmentos visibles, leyenda de premios y resultado mas claro de donde cae.
   - Integracion de mapas interactivos con Leaflet + OpenStreetMap.
   - Formulario de registro ajustado:
     - Se elimino el bloque visual de `Usuario`.
@@ -167,21 +200,60 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
 
 ### 3.12 Ajuste visual captcha
 
-- El captcha en registro se reacomodo para mejor lectura:
-  - Imagen centrada arriba.
-  - Campo de texto abajo, centrado.
-  - Mejor espaciado y contraste.
+- El captcha en registro se reemplazo por componente checkbox (reCAPTCHA v2):
+  - Mejor legibilidad.
+  - Sin distorsion de texto en imagen.
+  - Flujo mas cercano al patron "No soy un robot".
 - Archivo:
   - `templates/clientes/registro.html`
 
 ### 3.6 Captcha y validaciones
 
-- Se integro `django-simple-captcha` en el registro.
-- Rutas captcha habilitadas en `restaurante_fidelizacion/urls.py`.
+- Se migro a captcha tipo checkbox estilo "No soy un robot" con `django-recaptcha` (Google reCAPTCHA v2).
+- Configurable por variables de entorno:
+  - `RECAPTCHA_PUBLIC_KEY`
+  - `RECAPTCHA_PRIVATE_KEY`
+- En desarrollo se usan claves de prueba por defecto para evitar bloqueo local.
 - Validaciones activas en registro:
   - Todos los campos obligatorios.
   - Correo obligatorio y con formato valido.
   - Correo unico.
+
+### 3.14 Integracion externa temporal de menu
+
+- Se agrego una vista separada para consumir API externa de comida:
+  - Ruta: `menu-api-temporal/`
+  - Fuente: Spoonacular (`complexSearch`)
+- Integracion de navegacion:
+  - La ruta de API se accede como sub-opcion dentro del menu principal de productos ("Comida premium extranjera").
+- Muestra recetas con:
+  - imagen
+  - descripcion
+  - precio por porcion (USD aproximado)
+  - boton para agregar al carrito local (sin abrir JSON externo)
+- Configuracion por variable de entorno:
+  - `SPOONACULAR_API_KEY`
+- Respaldo automatico:
+  - Si Spoonacular falla o no hay API key, se muestra menu externo alterno desde DummyJSON para no dejar la vista vacia.
+- Respaldo local final:
+  - Si tampoco hay conexion al respaldo externo, se muestra un catalogo estatico temporal para mantener continuidad de la UI.
+- El objetivo es validar integracion externa sin reemplazar la carta local del negocio.
+
+### 3.15 Reglas automaticas de fidelidad por compras acumuladas
+
+- Bonos automaticos por progreso de compra:
+  - Cada $100,000 en compras acumuladas: se crea 1 giro extra de ruleta.
+  - Cada $100,000 en compras acumuladas: se asigna descuento del 10% para siguiente pedido.
+- Estos beneficios se disparan automaticamente al completar pedidos.
+
+### 3.16 Comando de normalizacion de fidelizacion
+
+- Se agrego comando para limpiar datos legacy de bonificaciones antiguas:
+  - `python manage.py normalizar_fidelizacion` (simulacion)
+  - `python manage.py normalizar_fidelizacion --aplicar` (aplica cambios)
+- Limpieza aplicada en entorno actual:
+  - 4,781 giros legacy `bonus_spin_*` normalizados.
+  - 1,911 bonos legacy 8% desactivados.
 
 ### 3.8 Dependencias del proyecto
 
@@ -189,7 +261,7 @@ El negocio necesita fidelizar clientes en un mercado competitivo. La aplicacion 
 - Dependencias principales:
   - `Django==6.0.3`
   - `Pillow==12.1.1`
-  - `django-simple-captcha==0.6.3`
+  - `django-recaptcha==4.1.0`
   - `xhtml2pdf==0.2.17`
 - Comando recomendado al clonar/reiniciar el entorno:
   - `pip install -r requirements.txt`

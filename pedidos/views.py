@@ -121,5 +121,9 @@ def checkout(request):
         {
             "productos": productos,
             "total": total,
+            "tiene_giro_bienvenida_pendiente": request.user.perfil.oportunidades_ruleta.filter(
+                accion='registro',
+                usada=False,
+            ).exists(),
         },
     )

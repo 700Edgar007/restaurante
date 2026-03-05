@@ -2,15 +2,85 @@
 
 {% block title %}Pedido confirmado{% endblock %}
 
+{% block extra_styles %}
+<style>
+    .ok-card {
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 16px 32px rgba(63, 38, 24, 0.14);
+    }
+
+    .ok-badge {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #2c8d58, #48aa6f);
+        color: #fff;
+        font-size: 1.75rem;
+        box-shadow: 0 10px 20px rgba(38, 129, 84, 0.32);
+    }
+
+    .ok-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 0.8rem;
+        margin: 1.2rem 0;
+    }
+
+    .ok-item {
+        border: 1px solid #e5cfaf;
+        border-radius: 14px;
+        background: #fff8ec;
+        padding: 0.8rem;
+        text-align: left;
+    }
+
+    .ok-item .k {
+        color: #8a6a49;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.1rem;
+    }
+
+    .ok-item .v {
+        font-weight: 800;
+        color: #5c271f;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card border-0 shadow rounded-4">
+    <div class="col-xl-9">
+        <div class="card ok-card">
             <div class="card-body p-4 p-md-5 text-center">
+                <div class="ok-badge mb-3"><i class="bi bi-check2"></i></div>
                 <h2 class="fw-bold mb-2">Pedido confirmado</h2>
                 <p class="text-muted mb-4">Tu orden #{{ pedido.id }} fue registrada correctamente.</p>
 
-                <p class="mb-1">Tipo: <strong>{{ pedido.get_tipo_display }}</strong></p>
+                <div class="ok-grid">
+                    <div class="ok-item">
+                        <div class="k">Tipo</div>
+                        <div class="v">{{ pedido.get_tipo_display }}</div>
+                    </div>
+                    <div class="ok-item">
+                        <div class="k">Total pagado</div>
+                        <div class="v">${{ total|floatformat:2 }}</div>
+                    </div>
+                    <div class="ok-item">
+                        <div class="k">Descuento total</div>
+                        <div class="v">{% if descuento_aplicado > 0 %}${{ descuento_aplicado|floatformat:2 }}{% else %}Sin descuento{% endif %}</div>
+                    </div>
+                    <div class="ok-item">
+                        <div class="k">Puntos estimados</div>
+                        <div class="v">+{{ total|floatformat:0 }}</div>
+                    </div>
+                </div>
+
                 {% if promocion_aplicada %}
                     <p class="mb-1">Promocion aplicada: <strong>{{ promocion_aplicada.titulo }}</strong></p>
                 {% endif %}
@@ -18,9 +88,8 @@
                     <p class="mb-1">Premio aplicado: <strong>{{ premio_descuento.descripcion }}</strong></p>
                 {% endif %}
                 {% if descuento_aplicado > 0 %}
-                    <p class="mb-1">Descuento total ({{ porcentaje_descuento_total }}%): <strong>${{ descuento_aplicado }}</strong></p>
+                    <p class="mb-3">Porcentaje total aplicado: <strong>{{ porcentaje_descuento_total }}%</strong></p>
                 {% endif %}
-                <p class="mb-4">Total pagado: <strong>${{ total }}</strong></p>
 
                 <p class="mb-4">Este consumo se conviertio en puntos de fidelidad para tu perfil.</p>
 

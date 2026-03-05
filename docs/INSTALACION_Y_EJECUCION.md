@@ -52,7 +52,22 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## 9) Flujo recomendado para tu companero al hacer pull
+## 9) Variables de entorno opcionales (recomendado)
+
+Para activar servicios externos en local:
+
+```bash
+# API externa temporal de comida
+set SPOONACULAR_API_KEY=tu_api_key
+
+# Captcha checkbox (si no se define, el proyecto usa claves de prueba)
+set RECAPTCHA_PUBLIC_KEY=tu_site_key
+set RECAPTCHA_PRIVATE_KEY=tu_secret_key
+```
+
+Nota: si no defines `SPOONACULAR_API_KEY`, la vista `menu-api-temporal/` usa respaldo automatico y, si no hay conexion externa, cae a un catalogo local para no quedar vacia.
+
+## 10) Flujo recomendado para tu companero al hacer pull
 
 Cuando reciba tus cambios por Git, no es solo "pull y listo". Debe ejecutar:
 
@@ -65,3 +80,13 @@ python manage.py runserver
 ```
 
 Si no instala dependencias nuevas o no aplica migraciones, pueden aparecer errores de modulos faltantes o de base de datos.
+
+## 11) Mantenimiento de fidelizacion (si hubo reglas antiguas)
+
+```bash
+# Ver diagnostico sin tocar datos
+python manage.py normalizar_fidelizacion
+
+# Aplicar limpieza de datos legacy
+python manage.py normalizar_fidelizacion --aplicar
+```

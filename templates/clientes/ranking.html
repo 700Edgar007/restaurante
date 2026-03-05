@@ -17,6 +17,23 @@
     .plata { background: linear-gradient(130deg, #8a96a1, #b8c2cb); }
     .bronce { background: linear-gradient(130deg, #9b5d35, #c98f64); }
 
+    .podio-row {
+        align-items: end;
+    }
+
+    .podio-oro { min-height: 185px; }
+    .podio-plata { min-height: 155px; }
+    .podio-bronce { min-height: 130px; }
+
+    .avatar-mini {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin-right: 6px;
+        border: 1px solid #e8cfad;
+        vertical-align: middle;
+    }
+
     .ranking-tabla tbody tr:nth-child(1) {
         background: rgba(241, 201, 95, 0.18);
     }
@@ -27,6 +44,27 @@
 
     .ranking-tabla tbody tr:nth-child(3) {
         background: rgba(201, 143, 100, 0.15);
+    }
+
+    .mini-kpi {
+        border: 1px solid #e1ccb0;
+        border-radius: 14px;
+        background: #fff8ec;
+        padding: 0.8rem;
+        height: 100%;
+    }
+
+    .mini-kpi .k {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #8d6b4a;
+    }
+
+    .mini-kpi .v {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #5e2a21;
     }
 </style>
 {% endblock %}
@@ -50,9 +88,30 @@
             </form>
         </div>
 
-        <div class="row g-3 my-2">
+        <div class="row g-3 my-3">
             <div class="col-md-4">
-                <div class="podio plata">
+                <div class="mini-kpi">
+                    <div class="k">Clientes en ranking</div>
+                    <div class="v">{{ perfiles|length }}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mini-kpi">
+                    <div class="k">Lider actual</div>
+                    <div class="v">{% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mini-kpi">
+                    <div class="k">Mayor consumo</div>
+                    <div class="v">{% if perfiles|length > 0 %}${{ perfiles.0.total_consumido }}{% else %}$0{% endif %}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 my-2 podio-row">
+            <div class="col-md-4">
+                <div class="podio plata podio-plata">
                     <div class="small">2do lugar</div>
                     <h5 class="fw-bold mb-1">
                         {% if perfiles|length > 1 %}{{ perfiles.1.usuario.username }}{% else %}-{% endif %}
@@ -63,7 +122,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="podio oro">
+                <div class="podio oro podio-oro">
                     <div class="small">1er lugar</div>
                     <h5 class="fw-bold mb-1">
                         {% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}
@@ -74,7 +133,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="podio bronce">
+                <div class="podio bronce podio-bronce">
                     <div class="small">3er lugar</div>
                     <h5 class="fw-bold mb-1">
                         {% if perfiles|length > 2 %}{{ perfiles.2.usuario.username }}{% else %}-{% endif %}
@@ -102,7 +161,7 @@
                     {% for perfil in perfiles %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ perfil.usuario.username }}</td>
+                            <td><img src="{{ perfil.avatar_url }}" alt="{{ perfil.usuario.username }}" class="avatar-mini">{{ perfil.usuario.username }}</td>
                             <td>{{ perfil.pedidos_completados }}</td>
                             <td>${{ perfil.total_consumido }}</td>
                             <td>{{ perfil.puntos }}</td>

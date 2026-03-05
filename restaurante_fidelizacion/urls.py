@@ -12,7 +12,6 @@ urlpatterns = [
     path("", include("carta.urls")),
     path("pedidos/", include("pedidos.urls")),
     path("clientes/", include("clientes.urls")),
-    path('captcha/', include('captcha.urls')),
     path('registro/', registro_usuario, name='registro_publico'),
     path(
         "login/",

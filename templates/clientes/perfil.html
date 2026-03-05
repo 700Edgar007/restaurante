@@ -16,8 +16,8 @@
     }
 
     .ruleta {
-        width: 250px;
-        height: 250px;
+        width: 280px;
+        height: 280px;
         border-radius: 50%;
         border: 10px solid #fff7e8;
         margin: 0 auto;
@@ -49,29 +49,59 @@
 
     .ruleta-wrap {
         position: relative;
-        width: 250px;
+        width: 280px;
         margin: 0 auto;
     }
 
-    .ico {
+    .seg {
         position: absolute;
-        font-size: 1.1rem;
+        font-size: 0.68rem;
+        font-weight: 700;
         color: #5d301f;
-        background: rgba(255, 255, 255, 0.72);
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        background: rgba(255, 255, 255, 0.84);
+        border-radius: 999px;
+        padding: 0.22rem 0.45rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 74px;
+        border: 1px solid #e9c78d;
     }
 
-    .i1 { top: 8px; left: 110px; }
-    .i2 { top: 52px; right: 20px; }
-    .i3 { top: 165px; right: 32px; }
-    .i4 { bottom: 8px; left: 110px; }
-    .i5 { top: 164px; left: 30px; }
-    .i6 { top: 52px; left: 20px; }
+    .s1 { top: 12px; left: 102px; }
+    .s2 { top: 55px; right: -8px; }
+    .s3 { top: 182px; right: -6px; }
+    .s4 { bottom: 14px; left: 102px; }
+    .s5 { top: 184px; left: -10px; }
+    .s6 { top: 54px; left: -12px; }
+
+    .leyenda-premios {
+        margin-top: 1rem;
+        border: 1px solid #ead6ba;
+        border-radius: 14px;
+        background: #fff8ec;
+        padding: 0.8rem;
+    }
+
+    .leyenda-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        padding: 0.2rem 0;
+    }
+
+    .beneficio-box {
+        border: 1px dashed #d8be97;
+        border-radius: 14px;
+        background: #fff9ef;
+        padding: 0.8rem;
+        font-size: 0.92rem;
+    }
+
+    .premios-scroll {
+        max-height: 280px;
+        overflow-y: auto;
     }
 
     .puntero {
@@ -87,39 +117,121 @@
         font-size: 1.75rem;
         font-weight: 800;
     }
+
+    .stat-card {
+        border: 0;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #fffdf9, #fff4e4);
+        box-shadow: 0 8px 18px rgba(70, 40, 20, 0.1);
+        padding: 1rem;
+        height: 100%;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #8d6c4b;
+    }
+
+    .stat-value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #5a281f;
+    }
+
+    .avatar-main {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        border: 2px solid #e5ccab;
+        background: #fff;
+        object-fit: cover;
+    }
+
+    .avatar-option {
+        border: 1px solid #e6cfb0;
+        border-radius: 12px;
+        background: #fff;
+        padding: 0.5rem;
+    }
+
+    .avatar-option img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid #ecdac2;
+        background: #fff;
+    }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 {% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <div class="col-lg-4">
-        <div class="card card-soft p-4 h-100">
+<div class="card card-soft p-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ perfil.avatar_url }}" alt="Avatar de {{ perfil.usuario.username }}" class="avatar-main">
+            <div>
             <p class="text-muted mb-1">Hola</p>
-            <h3 class="fw-bold">{{ perfil.usuario.first_name|default:perfil.usuario.username }}</h3>
-            <p class="nivel mb-1">Nivel {{ perfil.nivel }}</p>
-            <p class="mb-3"><strong id="puntos-actuales">{{ perfil.puntos }}</strong> puntos acumulados</p>
-            <p class="mb-0 text-muted">{{ total_pedidos }} pedidos - ${{ total_gastado }} consumidos</p>
+            <h3 class="fw-bold mb-0">{{ perfil.usuario.first_name|default:perfil.usuario.username }}</h3>
+            </div>
         </div>
+        <p class="nivel mb-0">Nivel {{ perfil.nivel }}</p>
     </div>
 
-    <div class="col-lg-8">
-        <div class="card card-soft p-4 mb-4">
+    <div class="row g-3 mt-1">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Puntos</div>
+                <div id="puntos-actuales" class="stat-value">{{ perfil.puntos }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Pedidos</div>
+                <div class="stat-value">{{ total_pedidos }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Consumo total</div>
+                <div class="stat-value">${{ total_gastado }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">Giros disponibles</div>
+                <div class="stat-value">{{ oportunidades_disponibles|length }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card card-soft p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0">Ruleta de fidelidad</h5>
                 <span id="badge-giros" class="badge text-bg-warning">{{ oportunidades_disponibles|length }} giros disponibles</span>
             </div>
-            <p class="text-muted">Cada accion clave te da un giro. Registro y primer pedido ya te desbloquean oportunidades.</p>
+            <p class="text-muted">Las bonificaciones se otorgan por compras acumuladas: cada $100,000 desbloqueas giro extra y descuento.</p>
+
+            <div class="beneficio-box mb-3">
+                <div><strong>Siguiente umbral:</strong> ${{ objetivo_compra|floatformat:0 }} en compras acumuladas.</div>
+                <div><strong>Te faltan:</strong> ${{ faltante_compra_bono|floatformat:0 }} para recibir nuevas bonificaciones.</div>
+            </div>
 
             <div class="puntero"></div>
             <div class="ruleta-wrap">
-                <div id="ruleta" class="ruleta"></div>
-                <span class="ico i1"><i class="bi bi-star-fill"></i></span>
-                <span class="ico i2"><i class="bi bi-cup-hot"></i></span>
-                <span class="ico i3"><i class="bi bi-gift-fill"></i></span>
-                <span class="ico i4"><i class="bi bi-lightning-fill"></i></span>
-                <span class="ico i5"><i class="bi bi-emoji-smile-fill"></i></span>
-                <span class="ico i6"><i class="bi bi-cash-coin"></i></span>
+                <div id="ruleta" class="ruleta">
+                    <span class="seg s1">5%</span>
+                    <span class="seg s2">10%</span>
+                    <span class="seg s3">+15 pts</span>
+                    <span class="seg s4">+30 pts</span>
+                    <span class="seg s5">Giro +1</span>
+                    <span class="seg s6">20%</span>
+                </div>
             </div>
 
             <div class="text-center mt-3">
@@ -130,9 +242,19 @@
                 {% endif %}
                 <p id="resultado-ruleta" class="mt-3 mb-0 fw-semibold"></p>
             </div>
+
+            <div class="leyenda-premios">
+                <div class="small fw-bold mb-2">Recompensas posibles</div>
+                {% for premio in ruleta_premios %}
+                    <div class="leyenda-item">
+                        <span>{{ premio.etiqueta }}</span>
+                        <span class="text-muted">{{ premio.descripcion }}</span>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
-        <div class="card card-soft p-4 mb-4">
+        <div class="card card-soft p-4 mt-4">
             <h5 class="fw-bold mb-3">Promociones vigentes</h5>
             <div class="row g-3">
                 {% for promo in promociones %}
@@ -148,32 +270,43 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
 
-        <div class="card card-soft p-4 mb-4">
+    <div class="col-xl-5">
+        <div class="card card-soft p-4">
             <h5 class="fw-bold mb-3">Premios pendientes</h5>
-            <ul class="list-group list-group-flush">
-                {% for premio in premios %}
-                    <li class="list-group-item bg-transparent d-flex justify-content-between">
-                        <span>{{ premio.descripcion }}</span>
-                        {% if premio.tipo == 'DESCUENTO' %}
-                            <strong>{{ premio.descuento_porcentaje }}%</strong>
-                        {% else %}
-                            <strong>+{{ premio.puntos }} pts</strong>
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <li class="list-group-item bg-transparent">No tienes premios administrativos activos.</li>
-                {% endfor %}
-            </ul>
+            {% if premios_count > 20 %}
+                <p class="small text-muted">Mostrando 20 de {{ premios_count }} premios pendientes.</p>
+            {% endif %}
+            <div class="premios-scroll">
+                <ul class="list-group list-group-flush">
+                    {% for premio in premios %}
+                        <li class="list-group-item bg-transparent d-flex justify-content-between">
+                            <span>{{ premio.descripcion }}</span>
+                            {% if premio.tipo == 'DESCUENTO' %}
+                                <strong>{{ premio.descuento_porcentaje }}%</strong>
+                            {% else %}
+                                <strong>+{{ premio.puntos }} pts</strong>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item bg-transparent">No tienes premios activos.</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
 
-        <div class="card card-soft p-4">
+        <div class="card card-soft p-4 mt-4">
             <h5 class="fw-bold mb-3">Historial de beneficios</h5>
             <ul class="list-group list-group-flush">
                 {% for giro in historial_ruleta %}
                     <li class="list-group-item bg-transparent d-flex justify-content-between">
-                        <span>{{ giro.get_accion_display }} - {{ giro.premio }}</span>
-                        <strong>+{{ giro.puntos_otorgados }} pts</strong>
+                        <span>{{ giro.accion_legible }} - {{ giro.premio }}</span>
+                        {% if giro.puntos_otorgados > 0 %}
+                            <strong>+{{ giro.puntos_otorgados }} pts</strong>
+                        {% else %}
+                            <strong class="text-muted">Beneficio aplicado</strong>
+                        {% endif %}
                     </li>
                 {% empty %}
                     <li class="list-group-item bg-transparent">Aun no has reclamado premios de la ruleta.</li>
@@ -182,14 +315,49 @@
         </div>
 
         <div class="card card-soft p-4 mt-4">
+            <h5 class="fw-bold mb-3">Personaliza tu avatar</h5>
+            <form method="post" class="row g-2 mb-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label class="form-label">Estilo</label>
+                    <select name="avatar_estilo" class="form-select">
+                        {% for code, label in avatar_estilos %}
+                            <option value="{{ code }}" {% if perfil.avatar_estilo == code %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Semilla (texto)</label>
+                    <input type="text" name="avatar_semilla" class="form-control" value="{{ perfil.avatar_semilla|default:perfil.usuario.username }}">
+                </div>
+                <div class="col-12 d-grid">
+                    <button class="btn btn-main" type="submit">Actualizar avatar</button>
+                </div>
+            </form>
+            <div class="row g-2">
+                {% for avatar in avatar_sugerencias %}
+                    <div class="col-6">
+                        <div class="avatar-option d-flex align-items-center gap-2">
+                            <img src="{{ avatar.url }}" alt="{{ avatar.nombre }}">
+                            <small>{{ avatar.nombre }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card card-soft p-4 mt-4">
             <h5 class="fw-bold mb-2">Mi ubicacion</h5>
             <p class="text-muted">Selecciona tu ubicacion en el mapa para usarla en domicilios.</p>
             <div id="mapa-perfil" class="mb-3"></div>
             <div class="row g-2">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <input id="direccion-perfil" type="text" class="form-control" placeholder="Direccion referencial" value="{{ perfil.direccion }}">
                 </div>
-                <div class="col-md-4 d-grid">
+                <div class="col-md-3 d-grid">
+                    <button id="btn-buscar-direccion" class="btn btn-outline-dark" type="button">Buscar en mapa</button>
+                </div>
+                <div class="col-md-3 d-grid">
                     <button id="btn-guardar-ubicacion" class="btn btn-main" type="button">Guardar ubicacion</button>
                 </div>
             </div>
@@ -206,6 +374,7 @@
     const boton = document.getElementById('btn-girar');
     const resultado = document.getElementById('resultado-ruleta');
     const totalSegmentos = 6;
+    let rotacionAcumulada = 0;
 
     function obtenerCookie(nombre) {
         const valor = `; ${document.cookie}`;
@@ -234,12 +403,17 @@
             }
 
             const gradosPorSegmento = 360 / totalSegmentos;
-            const extra = 360 * 5;
-            const destino = extra + ((totalSegmentos - data.segmento) * gradosPorSegmento);
+            const extra = 360 * 6;
+            const offsetCentro = gradosPorSegmento / 2;
+            const destinoSegmento = (360 - (data.segmento * gradosPorSegmento) - offsetCentro);
+            const destino = rotacionAcumulada + extra + destinoSegmento;
+            rotacionAcumulada = destino % 360;
             ruleta.style.transform = `rotate(${destino}deg)`;
 
             setTimeout(() => {
-                resultado.textContent = `Ganaste ${data.premio} (+${data.puntos} pts)`;
+                const detalle = data.descripcion_premio ? ` - ${data.descripcion_premio}` : '';
+                const extraTexto = data.tipo_premio === 'PUNTOS' ? ` (+${data.puntos} pts)` : '';
+                resultado.textContent = `Cayo en: ${data.premio}${extraTexto}${detalle}`;
                 const puntos = document.getElementById('puntos-actuales');
                 const badge = document.getElementById('badge-giros');
                 if (puntos) {
@@ -281,8 +455,65 @@
         });
 
         const btnGuardar = document.getElementById('btn-guardar-ubicacion');
+        const btnBuscarDireccion = document.getElementById('btn-buscar-direccion');
         const msgUbicacion = document.getElementById('msg-ubicacion');
         const direccionPerfil = document.getElementById('direccion-perfil');
+
+        async function buscarDireccionEnMapa() {
+            const direccion = (direccionPerfil ? direccionPerfil.value : '').trim();
+            if (!direccion) {
+                msgUbicacion.textContent = 'Escribe una direccion para ubicarla en el mapa.';
+                return false;
+            }
+
+            msgUbicacion.textContent = 'Buscando direccion...';
+
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=es&q=${encodeURIComponent(direccion)}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('No se pudo consultar el servicio de mapas.');
+                }
+
+                const resultados = await response.json();
+                if (!Array.isArray(resultados) || resultados.length === 0) {
+                    msgUbicacion.textContent = 'No se encontro una ubicacion para esa direccion.';
+                    return false;
+                }
+
+                const lat = Number(resultados[0].lat);
+                const lng = Number(resultados[0].lon);
+
+                marker.setLatLng([lat, lng]);
+                mapa.setView([lat, lng], 16);
+                actualizarCoord({ lat, lng });
+                msgUbicacion.textContent = 'Direccion ubicada en el mapa. Ahora puedes guardarla.';
+                return true;
+            } catch (error) {
+                msgUbicacion.textContent = error.message || 'No se pudo ubicar la direccion.';
+                return false;
+            }
+        }
+
+        if (direccionPerfil) {
+            direccionPerfil.addEventListener('keydown', async (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    await buscarDireccionEnMapa();
+                }
+            });
+        }
+
+        if (btnBuscarDireccion) {
+            btnBuscarDireccion.addEventListener('click', async () => {
+                await buscarDireccionEnMapa();
+            });
+        }
 
         if (btnGuardar) {
             btnGuardar.addEventListener('click', async () => {

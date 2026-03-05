@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
+from urllib.parse import quote
 
 from carta.models import Producto
 
@@ -17,6 +19,8 @@ class Perfil(models.Model):
     puntos = models.IntegerField(default=0)
     nivel = models.CharField(max_length=10, choices=NIVELES, default='Bronce')
     direccion = models.CharField(max_length=255, blank=True)
+    avatar_estilo = models.CharField(max_length=30, default='initials')
+    avatar_semilla = models.CharField(max_length=120, blank=True)
     latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
@@ -33,6 +37,49 @@ class Perfil(models.Model):
             self.nivel = 'Plata'
         else:
             self.nivel = 'Bronce'
+
+    @property
+    def avatar_url(self):
+        estilos_validos = {
+            'initials',
+            'avataaars',
+            'bottts',
+            'identicon',
+            'adventurer',
+            'pixel-art',
+        }
+        estilo = self.avatar_estilo if self.avatar_estilo in estilos_validos else 'initials'
+        semilla = (self.avatar_semilla or self.usuario.username or f'user-{self.usuario_id}').strip()
+        return f"https://api.dicebear.com/8.x/{estilo}/svg?seed={quote(semilla)}"
+
+    def aplicar_bonos_por_compras(self):
+        total_compras = sum(
+            (pedido.total for pedido in self.pedido_set.filter(completado=True).only('total')),
+            Decimal('0.00'),
+        )
+        tramo_compra = Decimal('100000')
+        tramos_logrados = int(total_compras // tramo_compra)
+
+        tramos_otorgados = self.oportunidades_ruleta.filter(
+            accion__startswith='bonus_compra_100k_',
+        ).count()
+
+        if tramos_logrados <= tramos_otorgados:
+            return
+
+        for bloque in range(tramos_otorgados + 1, tramos_logrados + 1):
+            OportunidadRuleta.objects.get_or_create(
+                perfil=self,
+                accion=f'bonus_compra_100k_{bloque}',
+            )
+            PremioCliente.objects.create(
+                perfil=self,
+                tipo='DESCUENTO',
+                descripcion='Bono por compras acumuladas: 10% en tu siguiente pedido',
+                descuento_porcentaje=10,
+                activo=True,
+                usado=False,
+            )
 
 
 class OportunidadRuleta(models.Model):
@@ -54,7 +101,18 @@ class OportunidadRuleta(models.Model):
         ordering = ('-creada_en',)
 
     def __str__(self):
-        return f"{self.perfil.usuario.username} - {self.get_accion_display()}"
+        return f"{self.perfil.usuario.username} - {self.accion_legible()}"
+
+    def accion_legible(self):
+        if self.accion == 'registro':
+            return 'Registro de cuenta'
+        if self.accion == 'primer_pedido':
+            return 'Primer pedido completado'
+        if self.accion.startswith('bonus_compra_100k_'):
+            return 'Bono por compras acumuladas (100k)'
+        if self.accion.startswith('extra_spin_'):
+            return 'Giro extra ganado'
+        return self.accion
 
 
 class PremioCliente(models.Model):
@@ -151,11 +209,12 @@ class Pedido(models.Model):
      return total
 
     def aplicar_puntos(self):
-        puntos_ganados = int(self.total)
+        puntos_ganados = int(self.total / Decimal('1000'))
         perfil = self.cliente
         perfil.puntos += puntos_ganados
         perfil.actualizar_nivel()
         perfil.save()
+        perfil.aplicar_bonos_por_compras()
 
     def crear_oportunidad_primer_pedido(self):
         total_completados = Pedido.objects.filter(cliente=self.cliente, completado=True).count()

@@ -2,13 +2,51 @@
 
 {% block title %}Checkout{% endblock %}
 
+{% block extra_styles %}
+<style>
+    .checkout-card {
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 14px 30px rgba(84, 45, 24, 0.12);
+    }
+
+    .order-row td {
+        vertical-align: middle;
+    }
+
+    .summary-box {
+        border: 1px solid #ead3b3;
+        border-radius: 16px;
+        background: #fff8ec;
+        padding: 1rem;
+        position: sticky;
+        top: 1rem;
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.45rem;
+        font-size: 0.94rem;
+    }
+
+    .summary-total {
+        border-top: 1px dashed #d9be97;
+        padding-top: 0.6rem;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #64251d;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-9">
-        <div class="card border-0 rounded-4 shadow-sm">
-            <div class="card-body p-4">
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card checkout-card">
+            <div class="card-body p-4 p-lg-5">
                 <h3 class="fw-bold">Confirmar pedido</h3>
-                <p class="text-muted">Elige el tipo de entrega y confirma para sumar puntos.</p>
+                <p class="text-muted">Revisa tu orden y elige el tipo de entrega para sumar puntos y beneficios.</p>
 
                 <div class="table-responsive mb-3">
                     <table class="table align-middle">
@@ -21,35 +59,103 @@
                         </thead>
                         <tbody>
                             {% for item in productos %}
-                                <tr>
+                                <tr class="order-row">
                                     <td>{{ item.producto.nombre }}</td>
                                     <td>{{ item.cantidad }}</td>
-                                    <td class="text-end">${{ item.subtotal }}</td>
+                                    <td class="text-end">${{ item.subtotal|floatformat:2 }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <h5 class="mb-4">Total estimado: ${{ total }}</h5>
-
-                <form method="post">
+                <form method="post" id="form-checkout">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label">Tipo de pedido</label>
+                        <label class="form-label fw-semibold">Tipo de pedido</label>
                         <select name="tipo" class="form-select" required>
                             <option value="">Selecciona</option>
                             <option value="Local">Comer en el restaurante</option>
                             <option value="Domicilio">Entrega a domicilio</option>
                         </select>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
                         <a href="{% url 'ver_carrito' %}" class="btn btn-outline-dark">Volver</a>
-                        <button type="submit" class="btn btn-main">Confirmar pedido</button>
+                        <button type="submit" id="btn-confirmar-pedido" class="btn btn-main">Confirmar pedido</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <div class="col-xl-4">
+        <div class="summary-box">
+            <h6 class="fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Resumen de compra</h6>
+            <div class="summary-line">
+                <span>Productos</span>
+                <strong>{{ productos|length }}</strong>
+            </div>
+            <div class="summary-line">
+                <span>Programa fidelidad</span>
+                <strong>Activo</strong>
+            </div>
+            <div class="summary-line">
+                <span>Puntos estimados</span>
+                <strong>+{{ total|floatformat:0 }}</strong>
+            </div>
+            <div class="summary-line summary-total">
+                <span>Total estimado</span>
+                <span>${{ total|floatformat:2 }}</span>
+            </div>
+            <p class="small text-muted mb-0 mt-2">El total final puede incluir promociones o premios activos.</p>
+        </div>
+    </div>
 </div>
+
+{% if tiene_giro_bienvenida_pendiente %}
+<div class="modal fade" id="modalRuletaPendiente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tienes un giro pendiente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                Antes de pagar, puedes reclamar tu giro de bienvenida en la ruleta para obtener puntos o descuento.
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'mi_perfil' %}" class="btn btn-outline-dark">Ir a la ruleta</a>
+                <button type="button" id="btn-continuar-checkout" class="btn btn-main">Continuar con el pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if tiene_giro_bienvenida_pendiente %}
+<script>
+    const formCheckout = document.getElementById('form-checkout');
+    const modalEl = document.getElementById('modalRuletaPendiente');
+    const btnContinuar = document.getElementById('btn-continuar-checkout');
+    let confirmacionAprobada = false;
+
+    if (formCheckout && modalEl && btnContinuar) {
+        const modal = new bootstrap.Modal(modalEl);
+        formCheckout.addEventListener('submit', (event) => {
+            if (!confirmacionAprobada) {
+                event.preventDefault();
+                modal.show();
+            }
+        });
+
+        btnContinuar.addEventListener('click', () => {
+            confirmacionAprobada = true;
+            modal.hide();
+            formCheckout.submit();
+        });
+    }
+</script>
+{% endif %}
 {% endblock %}

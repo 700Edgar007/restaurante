@@ -2,6 +2,39 @@
 
 {% block title %}Panel de gestion{% endblock %}
 
+{% block extra_styles %}
+<style>
+    .kpi-admin {
+        border: 1px solid #e7d3b7;
+        border-radius: 14px;
+        background: #fff8ec;
+        padding: 0.85rem;
+    }
+
+    .kpi-admin .k {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #8e6d4c;
+    }
+
+    .kpi-admin .v {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #5f2c22;
+    }
+
+    .avatar-mini {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid #e6d2b5;
+        margin-right: 6px;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row g-4">
     <div class="col-12">
@@ -23,6 +56,12 @@
                     </div>
                 </div>
                 <p class="text-muted mb-0 mt-2">Desde aqui puedes seguir la actividad de clientes y otorgar premios directos.</p>
+
+                <div class="row g-2 mt-2">
+                    <div class="col-md-4"><div class="kpi-admin"><div class="k">Clientes visibles</div><div class="v">{{ perfiles|length }}</div></div></div>
+                    <div class="col-md-4"><div class="kpi-admin"><div class="k">Periodo activo</div><div class="v">{{ periodo|title }}</div></div></div>
+                    <div class="col-md-4"><div class="kpi-admin"><div class="k">Accion rapida</div><div class="v">Premiar</div></div></div>
+                </div>
             </div>
         </div>
     </div>
@@ -47,7 +86,7 @@
                             {% for perfil in perfiles %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ perfil.usuario.username }}</td>
+                                    <td><img src="{{ perfil.avatar_url }}" alt="{{ perfil.usuario.username }}" class="avatar-mini">{{ perfil.usuario.username }}</td>
                                     <td>{{ perfil.pedidos_completados }}</td>
                                     <td>${{ perfil.total_consumido }}</td>
                                     <td>{{ perfil.puntos }}</td>

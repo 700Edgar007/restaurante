@@ -1,7 +1,8 @@
 import re
 
 from django import forms
-from captcha.fields import CaptchaField
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
@@ -11,7 +12,7 @@ from django.contrib.auth.models import User
 class RegistroUsuarioForm(UserCreationForm):
     first_name = forms.CharField(max_length=150, required=True, label='Nombre completo')
     email = forms.EmailField(required=True, label='Correo electronico')
-    captcha = CaptchaField(label='Verificacion humana')
+    captcha = ReCaptchaField(label='Verificacion humana', widget=ReCaptchaV2Checkbox())
 
     class Meta:
         model = User
@@ -20,7 +21,9 @@ class RegistroUsuarioForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop('username', None)
-        for field in self.fields.values():
+        for nombre, field in self.fields.items():
+            if nombre == 'captcha':
+                continue
             field.widget.attrs.update({'class': 'form-control'})
 
     def clean_email(self):

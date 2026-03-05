@@ -5,11 +5,11 @@
 {% block extra_styles %}
 <style>
     .hero {
-        background: linear-gradient(120deg, rgba(139, 58, 46, 0.92), rgba(215, 168, 87, 0.93));
+        background: linear-gradient(120deg, rgba(123, 63, 52, 0.9), rgba(205, 164, 106, 0.86));
         color: #fff;
         border-radius: 22px;
         padding: 2rem;
-        box-shadow: 0 14px 32px rgba(96, 49, 34, 0.24);
+        box-shadow: 0 12px 26px rgba(96, 49, 34, 0.2);
         animation: aparecer 600ms ease-out;
     }
 
@@ -17,7 +17,7 @@
         border: 0;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 24px rgba(88, 52, 27, 0.14);
+        box-shadow: 0 8px 20px rgba(88, 52, 27, 0.12);
         transition: transform .25s ease, box-shadow .25s ease;
     }
 
@@ -29,6 +29,15 @@
     .producto-card img {
         height: 175px;
         object-fit: cover;
+    }
+
+    .qty-btn {
+        width: 34px;
+        border-radius: 10px;
+        border: 1px solid #d6c2a3;
+        background: #fff6e8;
+        font-weight: 700;
+        color: #6f2f25;
     }
 
     @keyframes aparecer {
@@ -79,9 +88,31 @@
                 <button class="btn btn-main" type="submit"><i class="bi bi-funnel"></i> Filtrar</button>
             </div>
             <div class="col-md-2 d-grid">
-                <a href="{% url 'carta_pdf' %}" class="btn btn-outline-dark"><i class="bi bi-file-earmark-arrow-down"></i> Carta PDF</a>
+                <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalPreviewCartaPdf">
+                    <i class="bi bi-file-earmark-richtext"></i> Vista PDF
+                </button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPreviewCartaPdf" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vista previa de carta PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0" style="height: 76vh;">
+                <iframe id="iframeCartaPdf" title="Vista previa PDF" src="{% url 'carta_pdf' %}" style="width:100%;height:100%;border:0;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'carta_pdf' %}?descargar=1" class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-download"></i> Descargar PDF
+                </a>
+                <button type="button" class="btn btn-main" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -95,8 +126,20 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="fw-bold">{{ producto.nombre }}</h5>
                     <p class="text-muted small">{{ producto.descripcion }}</p>
-                    <p class="fw-bold mt-auto mb-3">${{ producto.precio }}</p>
-                    <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-success w-100"><i class="bi bi-cart-plus"></i> Agregar al carrito</a>
+                    <p class="fw-bold mt-auto mb-2">${{ producto.precio|floatformat:2 }}</p>
+                    <form method="post" action="{% url 'agregar_al_carrito' producto.id %}" class="row g-2">
+                        {% csrf_token %}
+                        <div class="col-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <button type="button" class="qty-btn js-qty-minus">-</button>
+                                <input type="number" name="cantidad" class="form-control text-center js-qty-input" min="1" max="20" value="1">
+                                <button type="button" class="qty-btn js-qty-plus">+</button>
+                            </div>
+                        </div>
+                        <div class="col-8 d-grid">
+                            <button type="submit" class="btn btn-success w-100"><i class="bi bi-cart-plus"></i> Agregar al carrito</button>
+                        </div>
+                    </form>
                     {% if user.is_staff or user.is_superuser %}
                         <div class="d-flex gap-2 mt-2">
                             <a href="{% url 'editar_producto' producto.id %}" class="btn btn-outline-primary w-100">
@@ -114,4 +157,34 @@
         <p>No hay productos disponibles.</p>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.js-qty-plus').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const input = btn.parentElement.querySelector('.js-qty-input');
+            if (!input) return;
+            const actual = Number(input.value || 1);
+            const max = Number(input.max || 20);
+            input.value = Math.min(max, actual + 1);
+        });
+    });
+
+    document.querySelectorAll('.js-qty-minus').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const input = btn.parentElement.querySelector('.js-qty-input');
+            if (!input) return;
+            const actual = Number(input.value || 1);
+            const min = Number(input.min || 1);
+            input.value = Math.max(min, actual - 1);
+        });
+    });
+
+    document.querySelectorAll('form[action*="/agregar/"]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            localStorage.setItem('cart-bump', '1');
+        });
+    });
+</script>
 {% endblock %}

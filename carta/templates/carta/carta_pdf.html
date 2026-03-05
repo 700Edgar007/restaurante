@@ -2,51 +2,129 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Carta del restaurante</title>
+    <title>Carta premium</title>
     <style>
-        body {
-            font-family: DejaVu Sans, Arial, sans-serif;
-            font-size: 12px;
+        @page {
+            size: A4;
+            margin: 24pt;
         }
 
-        h1, h2 {
+        body {
+            font-family: DejaVu Sans, Arial, sans-serif;
+            font-size: 11px;
+            color: #2b2522;
+        }
+
+        .header {
+            border-bottom: 2px solid #7b3f34;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #5e2c22;
+            margin: 0 0 3px 0;
             text-align: center;
         }
 
-        .categoria {
-            margin-top: 20px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
+        .subtitle {
+            text-align: center;
+            color: #6a5a50;
+            margin: 0;
+            font-size: 10px;
         }
 
-        .producto {
-            margin-top: 5px;
+        .categoria {
+            margin-top: 14px;
+            background: #f3e5d3;
+            border: 1px solid #ddc1a0;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #5e2c22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 10px;
+            color: #7a6757;
+            border-bottom: 1px solid #e5d3be;
+            padding: 5px 4px;
+        }
+
+        td {
+            vertical-align: top;
+            border-bottom: 1px solid #efe2d2;
+            padding: 6px 4px;
+        }
+
+        .nombre {
+            font-weight: bold;
+            color: #332a25;
+            margin-bottom: 2px;
+        }
+
+        .desc {
+            color: #6b5b50;
+            font-size: 10px;
         }
 
         .precio {
-            float: right;
+            text-align: right;
+            width: 90px;
+            font-weight: bold;
+            color: #5e2c22;
+        }
+
+        .footer {
+            margin-top: 14px;
+            text-align: right;
+            font-size: 9px;
+            color: #887565;
         }
     </style>
 </head>
 <body>
-    <h1>Carta del Restaurante</h1>
-    <p style="text-align:center;">Listado de platos disponibles</p>
+    <div class="header">
+        <p class="title">Carta Restaurante Premium</p>
+        <p class="subtitle">Menu actualizado automaticamente desde gestion de productos</p>
+    </div>
 
     {% for categoria in categorias %}
-        <div class="categoria">
-            <h2>{{ categoria.nombre }}</h2>
-        </div>
-
-        {% for producto in productos %}
-            {% if producto.categoria_id == categoria.id %}
-                <div class="producto">
-                    <strong>{{ producto.nombre }}</strong>
-                    <span class="precio">${{ producto.precio }}</span><br>
-                    <span>{{ producto.descripcion }}</span>
-                </div>
-            {% endif %}
-        {% endfor %}
+        <div class="categoria">{{ categoria.nombre }}</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plato</th>
+                    <th class="precio">Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in categoria.productos %}
+                    <tr>
+                        <td>
+                            <div class="nombre">{{ producto.nombre }}</div>
+                            <div class="desc">{{ producto.descripcion }}</div>
+                        </td>
+                        <td class="precio">${{ producto.precio }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% empty %}
+        <p>No hay productos disponibles para mostrar en la carta.</p>
     {% endfor %}
+
+    <div class="footer">Documento generado desde el sistema de fidelizacion.</div>
 </body>
 </html>
 

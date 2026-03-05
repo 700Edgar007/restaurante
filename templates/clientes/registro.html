@@ -4,41 +4,39 @@
 
 {% block extra_styles %}
 <style>
-    .captcha {
-        width: 100%;
-        max-width: 360px;
+    .g-recaptcha {
+        transform-origin: left top;
+    }
+
+    .captcha-wrap {
         display: flex;
-        align-items: center;
         justify-content: center;
-        gap: 10px;
-        flex-direction: column;
+        width: 100%;
+    }
+
+    .register-shell {
+        max-width: 720px;
         margin: 0 auto;
     }
 
-    .captcha img {
-        border-radius: 10px;
-        border: 1px solid #d8c8aa;
-        background: #fff;
-        box-shadow: 0 8px 18px rgba(70, 40, 20, 0.15);
-        width: 180px;
-        height: 54px;
-        object-fit: cover;
-    }
-
-    .captcha input {
-        min-width: 160px;
-        font-size: 1rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 10px;
-        border: 1px solid #d8c8aa;
-        text-align: center;
+    .register-note {
+        border: 1px solid #e4d1b2;
+        border-radius: 14px;
+        background: #fff8ec;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
+<div class="register-shell">
+        <div class="register-note d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-stars me-1"></i>Empieza tu plan de beneficios</span>
+            <a href="{% url 'login' %}" class="small">Ya tengo cuenta</a>
+        </div>
+
         <div class="card border-0 shadow-lg rounded-4">
             <div class="card-body p-4 p-md-5">
                 <h3 class="fw-bold mb-2">Crea tu cuenta</h3>
@@ -85,8 +83,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Captcha</label>
-                        <div class="d-flex align-items-center gap-2">
+                        <label class="form-label">No soy un robot</label>
+                        <div class="captcha-wrap overflow-auto">
                             {{ form.captcha }}
                         </div>
                         {% for error in form.captcha.errors %}
@@ -102,6 +100,9 @@
                 </form>
             </div>
         </div>
-    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ form.media }}
 {% endblock %}
