@@ -301,6 +301,19 @@
                     </div>
                 </div>
             </div>
+            <div class="beneficio-box mt-3">
+                <p class="fw-semibold mb-2">Beneficios activos en tu nivel actual ({{ perfil.nivel }})</p>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <span class="badge text-bg-success">{{ promociones_disponibles_ids|length }} promociones disponibles</span>
+                    <span class="badge text-bg-primary">{{ promociones_exclusivas_count }} exclusivas de tu nivel</span>
+                    <span class="badge text-bg-dark">Mejor descuento visible: {{ mejor_descuento_nivel }}%</span>
+                </div>
+                {% if perfil.nivel == 'VIP' and promociones_exclusivas_count == 0 %}
+                    <p class="small text-muted mb-0">Tu cuenta ya es VIP, pero actualmente no hay promociones marcadas como VIP en catalogo. Puedes crear ofertas especiales desde gestion para que aparezcan aqui.</p>
+                {% else %}
+                    <p class="small text-muted mb-0">Estas cifras se calculan con las promociones vigentes que realmente puede usar tu cuenta hoy.</p>
+                {% endif %}
+            </div>
         </div>
 
         <div class="card card-soft p-4">
@@ -349,11 +362,19 @@
 
         <div class="card card-soft p-4 mt-4">
             <h5 class="fw-bold mb-3">Promociones vigentes</h5>
+            <p class="small text-muted mb-3">Primero veras las promociones disponibles para tu nivel y despues las bloqueadas.</p>
             <div class="row g-3">
                 {% for promo in promociones %}
                     <div class="col-md-6">
                         <div class="border rounded-4 p-3 h-100 bg-light">
-                            <p class="mb-1 small text-muted">Desde nivel {{ promo.nivel_minimo }}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <p class="mb-0 small text-muted">Desde nivel {{ promo.nivel_minimo }}</p>
+                                {% if promo.id in promociones_disponibles_ids %}
+                                    <span class="badge text-bg-success">Disponible</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Bloqueada</span>
+                                {% endif %}
+                            </div>
                             <h6 class="fw-bold mb-1">{{ promo.titulo }}</h6>
                             <p class="small mb-0">{{ promo.descripcion }}</p>
                         </div>

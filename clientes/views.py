@@ -25,6 +25,8 @@ AVATAR_ESTILOS = [
     ('pixel-art', 'Pixel art'),
 ]
 
+NIVEL_ORDEN = {'Bronce': 1, 'Plata': 2, 'Oro': 3, 'VIP': 4}
+
 
 RULETA_PREMIOS = [
     {
@@ -159,6 +161,30 @@ def mi_perfil(request):
         if promo.es_vigente()
     ]
 
+    orden_perfil = NIVEL_ORDEN.get(perfil.nivel, 0)
+    promociones_disponibles = [
+        promo for promo in promociones
+        if orden_perfil >= NIVEL_ORDEN.get(promo.nivel_minimo, 0)
+    ]
+    promociones_disponibles_ids = [promo.id for promo in promociones_disponibles]
+    promociones_exclusivas_nivel = [
+        promo for promo in promociones_disponibles
+        if promo.nivel_minimo == perfil.nivel
+    ]
+    mejor_descuento_nivel = max(
+        (promo.descuento_porcentaje for promo in promociones_disponibles),
+        default=0,
+    )
+    promociones_ordenadas = sorted(
+        promociones,
+        key=lambda promo: (
+            promo.id not in promociones_disponibles_ids,
+            NIVEL_ORDEN.get(promo.nivel_minimo, 0),
+            -promo.descuento_porcentaje,
+            promo.titulo.lower(),
+        ),
+    )
+
     oportunidades_disponibles = perfil.oportunidades_ruleta.filter(
         usada=False,
     ).exclude(accion__startswith='bonus_spin_')
@@ -186,7 +212,10 @@ def mi_perfil(request):
             "pedidos": pedidos[:5],
             "total_gastado": total_gastado,
             "total_pedidos": total_pedidos,
-            "promociones": promociones,
+            "promociones": promociones_ordenadas,
+            'promociones_disponibles_ids': promociones_disponibles_ids,
+            'promociones_exclusivas_count': len(promociones_exclusivas_nivel),
+            'mejor_descuento_nivel': mejor_descuento_nivel,
             "oportunidades_disponibles": oportunidades_disponibles,
             "historial_ruleta": historial_ruleta,
             'premios': premios,
