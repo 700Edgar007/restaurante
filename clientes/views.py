@@ -9,7 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Count, Q, Sum, Value
 from django.db.models.functions import Coalesce
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -90,19 +92,22 @@ def _normalizar_oportunidades_ruleta(perfil):
 
 def _enviar_correo_bienvenida(usuario):
     asunto = 'Bienvenido a Antojopolis - tu cuenta ya esta activa'
-    mensaje = (
-        f"Hola {usuario.first_name or usuario.username},\n\n"
-        'Gracias por crear tu cuenta en Antojopolis.\n'
-        'A partir de ahora te enviaremos novedades, beneficios y notificaciones importantes por este correo.\n\n'
-        'Ya puedes iniciar tu recorrido en el programa de fidelidad y reclamar tu giro de bienvenida.\n\n'
-        'Nos alegra tenerte con nosotros.'
+    nombre = usuario.first_name or usuario.username
+    html = render_to_string(
+        'emails/bienvenida.html',
+        {
+            'nombre': nombre,
+            'email': usuario.email,
+        },
     )
+    mensaje = strip_tags(html)
 
     send_mail(
         asunto,
         mensaje,
         settings.DEFAULT_FROM_EMAIL,
         [usuario.email],
+        html_message=html,
         fail_silently=False,
     )
 
