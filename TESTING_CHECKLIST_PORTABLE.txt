@@ -1,0 +1,62 @@
+CHECKLIST PORTABLE DE TESTING DJANGO
+
+1) FRAMEWORK USADO
+- django.test.TestCase
+- django.test.Client
+- unittest.mock
+- No usa pytest
+- No usa factories dedicadas
+- No usa fixtures externas versionadas
+
+2) ARCHIVOS DE PRUEBA REALES
+- carta/tests.py
+- clientes/tests.py
+- pedidos/tests.py
+
+3) CLASES BASE DE APOYO
+- CartaBaseTestCase
+- ClientesBaseTestCase
+- PedidosBaseTestCase
+
+4) COBERTURA FUNCIONAL POR APP
+- carta: filtros, carrito, premium temporal, CRUD staff, PDF, context processor
+- clientes: registro, login por email, perfil, promociones, ruleta, ranking, panel, ubicacion
+- pedidos: checkout, promociones, descuentos, total final, puntos y cierre de compra
+
+5) CONTRATOS QUE LOS TESTS ESPERAN
+- agregar al carrito sin login redirige a login
+- cantidad maxima por item en carrito = 20
+- admin no compra en checkout
+- descuento total de checkout no supera 80 por ciento
+- registro crea usuario con email normalizado y username autogenerado
+- senales crean perfil solo para clientes
+- ruleta responde JSON y consume oportunidades
+
+6) COMANDOS PARA EJECUTAR
+- python manage.py test
+- python manage.py test carta
+- python manage.py test clientes
+- python manage.py test pedidos
+- coverage run manage.py test
+- coverage report
+- coverage html
+
+7) ORDEN SUGERIDO PARA AMPLIAR PRUEBAS
+- cubrir primero el area tocada
+- luego correr suite completa
+- despues validar templates o APIs externas manualmente
+- documentar huecos nuevos en docs/testing/*.md
+
+8) HUECOS RECOMENDADOS A FUTURO
+- management commands
+- templates/correos
+- edge cases de APIs externas
+- mas permisos por rol
+- mas casos borde de descuentos y carrito
+
+9) DOCUMENTOS RELACIONADOS
+- TESTING_MODELOS_PORTABLES.md
+- docs/testing/testing_checklist_global.md
+- docs/testing/carta_testing.md
+- docs/testing/clientes_testing.md
+- docs/testing/pedidos_testing.md

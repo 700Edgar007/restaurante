@@ -1,5 +1,13 @@
 # Historial de cambios (resumen)
 
+## Documentacion y estandarizacion
+
+- [NUEVO] Se modularizo la documentacion por areas en `docs/areas/` para separar `carta`, `clientes`, `pedidos` y `templates`.
+- [NUEVO] Se modularizo la documentacion de pruebas en `docs/testing/` con un archivo especifico por app y un checklist global.
+- [NUEVO] Se actualizo `TESTING_MODELOS_PORTABLES.md` para que refleje el sistema de pruebas real de este repositorio y no un proyecto externo.
+- [NUEVO] Se actualizo `TESTING_CHECKLIST_PORTABLE.txt` para alinearlo con las apps y pruebas actuales del proyecto.
+- [NUEVO] Se amplio `docs/README.md` para indexar la nueva estructura documental.
+
 ## Base funcional
 
 - [NUEVO] Se exige autenticacion para acciones de carrito: agregar productos y ver carrito ahora redirigen a `login` con mensaje informativo si el usuario no ha iniciado sesion.

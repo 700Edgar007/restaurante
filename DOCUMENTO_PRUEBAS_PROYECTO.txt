@@ -1,0 +1,349 @@
+DOCUMENTO MAESTRO DE PRUEBAS DEL PROYECTO
+
+1. NOMBRE DEL PROYECTO
+
+Sistema web de restaurante con fidelizacion de clientes.
+
+2. DESCRIPCION GENERAL DEL SISTEMA
+
+Este proyecto consiste en una aplicacion web desarrollada con Django para apoyar la gestion comercial y la experiencia digital de un restaurante. El sistema permite mostrar una carta digital, gestionar productos, registrar clientes, autenticar usuarios, administrar un carrito de compras, procesar pedidos, aplicar promociones, otorgar puntos de fidelizacion, manejar premios y descuentos, mostrar ranking de clientes y ofrecer funciones adicionales como ruleta de beneficios, ubicacion del cliente y panel de gestion para cuentas administrativas.
+
+La plataforma integra modulos de catalogo, clientes, fidelizacion y checkout dentro de un mismo flujo. Su objetivo principal es mejorar la experiencia del usuario, incentivar compras recurrentes y facilitar la administracion interna de funciones clave del negocio.
+
+3. OBJETIVO GENERAL DEL DOCUMENTO DE PRUEBAS
+
+Definir el alcance, objetivos, tipos de prueba, entorno de prueba y criterios generales de validacion del sistema web del restaurante, con el fin de verificar que sus funcionalidades operen correctamente, que la seguridad basica sea adecuada y que los distintos modulos trabajen de manera integrada.
+
+4. OBJETIVO GENERAL DEL SISTEMA
+
+Desarrollar una plataforma web para restaurante que permita gestionar la carta, los pedidos y la fidelizacion de clientes, brindando una experiencia digital funcional, segura y organizada tanto para usuarios finales como para administradores.
+
+5. OBJETIVOS ESPECIFICOS DEL SISTEMA
+
+- Permitir a los usuarios visualizar la carta del restaurante y consultar productos disponibles.
+- Facilitar el registro e inicio de sesion de clientes mediante correo electronico y contrasena.
+- Permitir agregar productos al carrito, modificar cantidades y completar pedidos.
+- Implementar un sistema de fidelizacion basado en puntos, niveles, promociones y premios.
+- Brindar herramientas administrativas para gestionar productos y beneficios de clientes.
+- Registrar pedidos y aplicar descuentos de forma coherente con las reglas de negocio.
+- Ofrecer una experiencia de usuario clara mediante vistas de perfil, ranking, checkout y confirmacion.
+
+6. OBJETIVO GENERAL DE LAS PRUEBAS
+
+Comprobar que el sistema funcione de acuerdo con los requisitos funcionales y tecnicos definidos, validando la correcta interaccion entre sus modulos, la proteccion de vistas restringidas, la validacion de datos de entrada y la estabilidad de los procesos principales del negocio.
+
+7. OBJETIVOS ESPECIFICOS DE LAS PRUEBAS
+
+- Verificar que la carta muestre productos disponibles y permita realizar busquedas y filtros.
+- Validar que el carrito de compras opere correctamente al agregar, actualizar y eliminar productos.
+- Confirmar que el flujo de checkout genere pedidos validos y calcule descuentos, totales y puntos de manera correcta.
+- Comprobar que el registro de usuarios y el inicio de sesion funcionen con los datos esperados.
+- Validar que el sistema de fidelizacion aplique correctamente niveles, puntos, promociones, premios y ruleta.
+- Verificar que los usuarios no autorizados no puedan acceder a modulos administrativos o vistas restringidas.
+- Comprobar que formularios y endpoints manejen adecuadamente datos validos e invalidos.
+- Validar que los modulos del sistema trabajen de forma integrada sin afectar la consistencia de la informacion.
+
+8. ALCANCE DE LAS PRUEBAS
+
+El alcance de este documento cubre las pruebas funcionales, de seguridad basica, de integracion y de validacion sobre los modulos principales del proyecto. Se evaluan especialmente los componentes implementados en las apps carta, clientes y pedidos, asi como los flujos visibles en las plantillas principales del sistema.
+
+Se incluyen dentro del alcance:
+
+- Visualizacion de productos y categorias.
+- Filtros y busqueda en la carta.
+- Agregado y gestion del carrito.
+- Registro de usuarios.
+- Inicio y cierre de sesion.
+- Perfil de cliente.
+- Sistema de puntos y niveles.
+- Promociones por nivel.
+- Premios administrativos.
+- Ruleta de fidelizacion.
+- Ranking de clientes.
+- Panel de gestion para administradores.
+- Checkout y confirmacion de pedido.
+- Generacion de carta en PDF.
+- Guardado de ubicacion del cliente.
+- Consumo de menu externo temporal con mecanismos de respaldo.
+
+Quedan fuera del alcance profundo de este documento, salvo mencion o validacion basica:
+
+- pruebas de carga o rendimiento avanzado
+- pruebas de penetracion profesional
+- despliegue en produccion
+- auditorias externas de infraestructura
+- compatibilidad avanzada en multiples navegadores y dispositivos fuera de pruebas basicas
+
+9. MODULOS DEL SISTEMA QUE SE DEBEN CONSIDERAR EN LAS PRUEBAS
+
+9.1 Modulo de carta
+
+Incluye listado de productos, categorias, filtros, busqueda, menu premium temporal y generacion de PDF.
+
+9.2 Modulo de carrito
+
+Incluye agregado de productos, actualizacion de cantidades, eliminacion de items y resumen del pedido antes del checkout.
+
+9.3 Modulo de clientes
+
+Incluye registro, login, perfil, avatar, ubicacion, ranking y visualizacion de beneficios.
+
+9.4 Modulo de fidelizacion
+
+Incluye puntos, niveles, promociones, premios, bonos por compras acumuladas y ruleta.
+
+9.5 Modulo de pedidos
+
+Incluye checkout, confirmacion, aplicacion de descuentos y calculo de puntos.
+
+9.6 Modulo administrativo funcional
+
+Incluye panel de gestion y operaciones restringidas para usuarios administrativos, como otorgar premios o gestionar productos.
+
+10. TIPOS DE PRUEBAS
+
+10.1 Pruebas funcionales
+
+Verificar que cada funcionalidad del sistema opere segun lo esperado.
+
+Aplicacion al proyecto:
+
+- Comprobar que la carta muestre los productos disponibles correctamente.
+- Verificar que el usuario pueda agregar productos al carrito.
+- Confirmar que se puedan actualizar cantidades y quitar productos del carrito.
+- Validar que el checkout genere pedidos con los datos esperados.
+- Verificar que el perfil del cliente muestre puntos, nivel, promociones y pedidos.
+- Comprobar que la ruleta entregue premios validos segun la logica del sistema.
+- Confirmar que la vista de ranking muestre informacion coherente.
+
+10.2 Pruebas de seguridad
+
+Comprobar que usuarios no autorizados no puedan acceder a vistas restringidas.
+
+Aplicacion al proyecto:
+
+- Verificar que un usuario no autenticado no pueda agregar productos al carrito ni ver el carrito.
+- Comprobar que un usuario comun no pueda ingresar al panel de gestion.
+- Validar que solo usuarios administrativos puedan crear, editar o eliminar productos.
+- Verificar que solo usuarios autenticados puedan acceder a perfil, ranking, checkout y ruleta.
+- Comprobar que las cuentas administrativas no ingresen al flujo de compra destinado a clientes.
+
+10.3 Pruebas de integracion
+
+Validar que los diferentes modulos del sistema trabajen correctamente entre si.
+
+Aplicacion al proyecto:
+
+- Verificar que el carrito creado en la carta sea utilizado correctamente en checkout.
+- Confirmar que un pedido completado actualice puntos y oportunidades de fidelizacion.
+- Comprobar que los premios de descuento se reflejen correctamente al finalizar una compra.
+- Verificar que promociones, perfil, pedidos y ranking compartan informacion consistente.
+- Confirmar que las senales de usuario creen automaticamente el perfil cuando corresponde.
+
+10.4 Pruebas de validacion de formularios
+
+Comprobar que los formularios del sistema manejen correctamente datos validos e invalidos.
+
+Aplicacion al proyecto:
+
+- Validar registro con correo correcto e incorrecto.
+- Verificar rechazo de correos duplicados.
+- Comprobar que las contrasenas cumplan el flujo esperado del formulario.
+- Validar que el login por correo funcione correctamente.
+- Comprobar que los formularios administrativos de productos guarden informacion valida.
+- Verificar validaciones sobre premios y descuentos administrados desde el panel.
+
+10.5 Pruebas de validacion de datos y reglas de negocio
+
+Comprobar que las operaciones del sistema respeten las reglas definidas para descuentos, puntos, niveles y promociones.
+
+Aplicacion al proyecto:
+
+- Verificar el calculo de puntos segun el total del pedido.
+- Validar el cambio de nivel del cliente segun puntaje acumulado.
+- Confirmar que la mejor promocion por nivel sea la que se aplica.
+- Verificar que el descuento total no supere el limite establecido por el sistema.
+- Comprobar que los bonos por compras acumuladas se creen cuando corresponde.
+
+10.6 Pruebas de interfaz y navegacion
+
+Comprobar que las vistas principales permitan una navegacion clara y coherente.
+
+Aplicacion al proyecto:
+
+- Verificar acceso correcto entre carta, carrito, checkout, perfil y ranking.
+- Confirmar que los mensajes al usuario aparezcan en eventos importantes.
+- Comprobar que los enlaces y botones principales redirijan a vistas correctas.
+- Validar que la experiencia de navegacion no rompa el flujo por errores simples.
+
+10.7 Pruebas de persistencia de datos
+
+Comprobar que la informacion registrada en el sistema se almacene y recupere correctamente desde la base de datos.
+
+Aplicacion al proyecto:
+
+- Verificar creacion de usuarios y perfiles.
+- Confirmar almacenamiento de pedidos y detalles de pedido.
+- Validar el guardado de direccion y coordenadas del cliente.
+- Comprobar el registro de premios, promociones y oportunidades de ruleta.
+
+10.8 Pruebas de servicios externos e integraciones auxiliares
+
+Comprobar que las integraciones externas no rompan el sistema y que existan comportamientos de respaldo.
+
+Aplicacion al proyecto:
+
+- Validar que el menu externo temporal funcione con API disponible.
+- Verificar que el sistema use respaldos cuando falle la API externa.
+- Comprobar que la generacion de PDF funcione cuando la dependencia este instalada.
+- Verificar el comportamiento del sistema cuando falte una dependencia o servicio externo.
+
+11. ENTORNO DE PRUEBA
+
+El entorno de prueba corresponde a un ambiente local de desarrollo configurado para validar el proyecto antes de despliegue.
+
+Caracteristicas del entorno:
+
+- Lenguaje: Python
+- Framework: Django
+- Base de datos: SQLite
+- Sistema operativo de desarrollo: entorno local de escritorio
+- Ejecucion del sistema: servidor de desarrollo de Django
+- Almacenamiento de archivos: sistema local con carpeta media
+- Gestion de sesiones: sesiones manejadas por Django
+- Pruebas automatizadas: framework nativo de Django
+
+Herramientas relacionadas:
+
+- `python manage.py test`
+- `coverage run manage.py test`
+- `coverage report`
+- `coverage html`
+
+12. DATOS DE PRUEBA
+
+Para la ejecucion de pruebas se consideran datos de prueba representativos del flujo real del sistema, por ejemplo:
+
+- usuarios cliente
+- usuarios administrativos
+- productos disponibles
+- productos no disponibles
+- categorias de productos
+- promociones vigentes
+- premios de descuento
+- oportunidades de ruleta
+- carritos con uno o varios productos
+- coordenadas validas e invalidas para ubicacion
+
+13. ESTRATEGIA GENERAL DE PRUEBAS
+
+La estrategia de prueba del proyecto se apoya en una combinacion de verificaciones automaticas y revisiones funcionales manuales.
+
+Estrategia automatizada:
+
+- uso de `django.test.TestCase`
+- pruebas por app
+- validacion de vistas, formularios, modelos y logica de negocio
+- validacion de sesiones, mensajes, respuestas JSON y redirecciones
+
+Estrategia manual complementaria:
+
+- revisar navegacion entre modulos
+- comprobar experiencia del usuario en registro, carrito, checkout y perfil
+- validar visualmente mensajes, ranking, promociones y ruleta
+- confirmar comportamiento visible de la carta PDF y menu externo temporal
+
+14. CASOS GENERALES DE PRUEBA POR AREA
+
+14.1 Carta y carrito
+
+- mostrar lista de productos disponibles
+- filtrar productos por categoria
+- buscar productos por nombre
+- agregar producto al carrito con cantidad valida
+- impedir acceso al carrito sin autenticacion
+- actualizar cantidad de un producto
+- eliminar producto del carrito
+
+14.2 Registro y autenticacion
+
+- registrar usuario con datos validos
+- rechazar registro con correo duplicado
+- iniciar sesion con correo y contrasena correctos
+- rechazar credenciales invalidas
+
+14.3 Perfil y fidelizacion
+
+- mostrar puntos y nivel del cliente
+- actualizar avatar del usuario
+- guardar ubicacion del cliente
+- otorgar giro por registro
+- aplicar puntos tras pedido completado
+- reflejar promociones segun nivel
+
+14.4 Ruleta y premios
+
+- impedir giro cuando no existan oportunidades
+- otorgar premio de puntos
+- otorgar premio de descuento
+- otorgar giro extra
+- registrar el resultado del giro en base de datos
+
+14.5 Panel administrativo
+
+- restringir acceso a usuarios no autorizados
+- permitir acceso a administradores
+- otorgar puntos o descuentos desde el panel
+- validar parametros antes de guardar premios
+
+14.6 Checkout y pedidos
+
+- impedir checkout sin login
+- impedir checkout con carrito vacio
+- calcular total del pedido correctamente
+- aplicar promociones y premios de descuento
+- respetar el tope maximo de descuento
+- vaciar el carrito despues de confirmar compra
+- generar pedido completado con detalles correctos
+
+15. CRITERIOS DE ACEPTACION DE LAS PRUEBAS
+
+Se considerara aceptable el sistema cuando:
+
+- las funcionalidades principales operen sin errores criticos
+- los flujos de registro, carrito, checkout y perfil funcionen correctamente
+- los usuarios no autorizados no accedan a vistas restringidas
+- los calculos de descuento, puntos y promociones sean coherentes
+- la informacion se almacene correctamente en la base de datos
+- los modulos interactuen entre si sin inconsistencias visibles
+- los formularios validen adecuadamente la informacion ingresada
+
+16. RIESGOS Y LIMITACIONES
+
+- Algunas integraciones externas pueden depender de conectividad o configuracion de claves de entorno.
+- La generacion de PDF depende de una libreria adicional instalada en el entorno.
+- Las pruebas automatizadas no reemplazan completamente las validaciones manuales de experiencia de usuario.
+- Este documento cubre el entorno actual del proyecto y puede requerir ajustes si cambian las reglas de negocio o la arquitectura.
+
+17. RESULTADO ESPERADO DEL PROCESO DE PRUEBAS
+
+Se espera obtener evidencia de que el sistema es funcional para su proposito principal, que protege adecuadamente rutas restringidas, que valida datos de forma consistente y que mantiene integridad entre los modulos de carta, clientes, fidelizacion y pedidos.
+
+18. CONCLUSION
+
+El presente documento sirve como base para la organizacion y ejecucion de pruebas del proyecto del restaurante. Su finalidad es orientar la validacion del sistema desde una perspectiva funcional, tecnica y de integracion. Asimismo, permite dejar estructurada una base formal que puede ser ampliada posteriormente con matrices de casos de prueba, evidencias, resultados obtenidos, incidencias detectadas y conclusiones finales de calidad.
+
+19. ANEXO SUGERIDO PARA FUTURA AMPLIACION
+
+Este documento puede complementarse posteriormente con:
+
+- tabla de casos de prueba
+- identificador por caso
+- pasos de ejecucion
+- resultado esperado
+- resultado obtenido
+- estado aprobado o fallido
+- evidencia en capturas
+- lista de incidencias encontradas
+
+FIN DEL DOCUMENTO

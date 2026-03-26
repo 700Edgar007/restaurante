@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "filesystem": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\Users\\edgar\\Desktop\\python en 15\\restaurante"
+      ]
+    }
+  }
+}
