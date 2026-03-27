@@ -21,6 +21,24 @@ from .forms import ProductoForm
 from .models import Categoria, Producto, asegurar_categorias_base, poblar_productos_demo
 
 
+def _resolver_imagen_pdf(request, producto):
+    if not getattr(producto, 'imagen', None):
+        return ''
+
+    try:
+        image_url = producto.imagen.url
+    except Exception:
+        return ''
+
+    if not image_url:
+        return ''
+
+    if image_url.startswith(('http://', 'https://', 'data:')):
+        return image_url
+
+    return request.build_absolute_uri(image_url)
+
+
 def _consumir_json(url, headers=None, timeout=12):
     request_api = Request(url, headers=headers or {'Accept': 'application/json'})
     with urlopen(request_api, timeout=timeout) as response:
@@ -437,6 +455,9 @@ def carta_pdf(request):
         )
 
     productos = Producto.objects.filter(disponible=True).select_related("categoria").order_by('categoria__nombre', 'nombre')
+    for producto in productos:
+        producto.pdf_imagen_src = _resolver_imagen_pdf(request, producto)
+
     agrupado = defaultdict(list)
     for producto in productos:
         categoria_nombre = producto.categoria.nombre if producto.categoria else 'Sin categoria'

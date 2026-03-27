@@ -4,6 +4,7 @@ from unittest import mock
 
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -11,6 +12,7 @@ from clientes.models import Promocion
 
 from .forms import ProductoForm
 from .models import Categoria, Producto
+from .views import _resolver_imagen_pdf
 
 
 class CartaBaseTestCase(TestCase):
@@ -217,6 +219,37 @@ class CartaViewsTests(CartaBaseTestCase):
         self.assertRedirects(response, reverse('crear_producto'))
         self.assertTrue(Categoria.objects.exists())
         self.assertGreaterEqual(Producto.objects.count(), 6)
+
+
+class PdfImageResolverTests(CartaBaseTestCase):
+    @override_settings(MEDIA_URL='/media/')
+    def test_resuelve_url_absoluta_para_media_local(self):
+        categoria = Categoria.objects.create(nombre='Postres')
+        producto = Producto.objects.create(
+            nombre='Torta',
+            descripcion='Porcion',
+            precio=Decimal('12000.00'),
+            categoria=categoria,
+            imagen=SimpleUploadedFile('torta.gif', b'GIF89a', content_type='image/gif'),
+        )
+
+        response = self.client.get(reverse('lista_productos'))
+        imagen_pdf = _resolver_imagen_pdf(response.wsgi_request, producto)
+
+        self.assertTrue(imagen_pdf.startswith('http://testserver/media/'))
+
+    def test_retorna_url_remota_sin_modificarla(self):
+        producto = types.SimpleNamespace(
+            imagen=types.SimpleNamespace(url='https://bucket-ejemplo.s3.us-east-2.amazonaws.com/productos/torta.jpg')
+        )
+
+        response = self.client.get(reverse('lista_productos'))
+        imagen_pdf = _resolver_imagen_pdf(response.wsgi_request, producto)
+
+        self.assertEqual(
+            imagen_pdf,
+            'https://bucket-ejemplo.s3.us-east-2.amazonaws.com/productos/torta.jpg',
+        )
 
     def test_carta_pdf_devuelve_error_si_no_esta_xhtml2pdf(self):
         with mock.patch.dict("sys.modules", {"xhtml2pdf": None}):
