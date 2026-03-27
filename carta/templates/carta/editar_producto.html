@@ -45,7 +45,17 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Imagen</label>
+                        {% if producto.imagen %}
+                            <div class="mb-2">
+                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 18px; border: 1px solid #e6d3b5; background: #fff8ec;">
+                            </div>
+                        {% endif %}
                         {{ form.imagen }}
+                        {% if producto.imagen %}
+                            <div class="form-text">Imagen actual cargada desde <code>{{ producto.imagen.url }}</code>.</div>
+                        {% else %}
+                            <div class="form-text">Este producto aun no tiene imagen.</div>
+                        {% endif %}
                     </div>
                     <div class="form-check mb-4">
                         {{ form.disponible }}

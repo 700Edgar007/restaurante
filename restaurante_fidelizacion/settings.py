@@ -156,7 +156,23 @@ if not DEBUG:
 # 📁 ARCHIVOS MEDIA (IMÁGENES)
 # ==============================
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# En Render conviene apuntar MEDIA_ROOT a un disco persistente si existe.
+# Prioridad:
+# 1. MEDIA_ROOT explícito por variable de entorno
+# 2. RENDER_DISK_PATH/media si el servicio tiene disco montado
+# 3. Carpeta local del proyecto como fallback
+CUSTOM_MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '').strip()
+RENDER_DISK_PATH = os.environ.get('RENDER_DISK_PATH', '').strip()
+
+if CUSTOM_MEDIA_ROOT:
+    MEDIA_ROOT = CUSTOM_MEDIA_ROOT
+elif RENDER_DISK_PATH:
+    MEDIA_ROOT = os.path.join(RENDER_DISK_PATH, 'media')
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+os.makedirs(MEDIA_ROOT, exist_ok=True)
 
 
 # ==============================

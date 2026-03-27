@@ -81,7 +81,17 @@ python manage.py runserver
 
 Si no instala dependencias nuevas o no aplica migraciones, pueden aparecer errores de modulos faltantes o de base de datos.
 
-## 11) Mantenimiento de fidelizacion (si hubo reglas antiguas)
+## 11) Imagenes en Render
+
+Si quieres que las imagenes subidas desde `/gestion/carta/nuevo` o edicion no se pierdan despues de reiniciar o redeployar, en Render debes montar un disco persistente.
+
+- Crea un `Persistent Disk` en tu servicio web.
+- Montalo, por ejemplo, en `/var/data`.
+- Agrega la variable de entorno `RENDER_DISK_PATH=/var/data`.
+
+Con la configuracion actual, Django guardara las imagenes en `/var/data/media` cuando esa variable exista. Si no existe, usa la carpeta local `media/`, que puede perderse en produccion.
+
+## 12) Mantenimiento de fidelizacion (si hubo reglas antiguas)
 
 ```bash
 # Ver diagnostico sin tocar datos
