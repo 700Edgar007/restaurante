@@ -1,7 +1,7 @@
 
 """
 Django settings for restaurante_fidelizacion project.
-Configurado para despliegue en Render 🚀
+Configurado para despliegue en Render 🚀 + AWS S3 ☁️
 """
 
 from pathlib import Path
@@ -18,19 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================
 # 🔐 SEGURIDAD
 # ==============================
-
-# SECRET_KEY:
-# - En desarrollo usa una generada automáticamente
-# - En producción (Render) usa la variable de entorno
 SECRET_KEY = os.environ.get("SECRET_KEY") or get_random_secret_key()
-
-# DEBUG:
-# - True en local
-# - False en Render automáticamente
 DEBUG = 'RENDER' not in os.environ
 
-# ALLOWED_HOSTS:
-# - Permite el dominio que Render genera automáticamente
 ALLOWED_HOSTS = []
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -55,6 +45,7 @@ INSTALLED_APPS = [
 
     # Librerías externas
     'django_recaptcha',
+    'storages',  # 🔥 AWS S3
 ]
 
 
@@ -63,8 +54,6 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
-    # WhiteNoise permite servir archivos estáticos en producción
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,18 +73,13 @@ ROOT_URLCONF = 'restaurante_fidelizacion.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-
-        # Carpeta de templates global
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                # Context processor personalizado
                 'carta.context_processors.carrito_resumen',
             ],
         },
@@ -108,8 +92,6 @@ WSGI_APPLICATION = 'restaurante_fidelizacion.wsgi.application'
 # ==============================
 # 🗄️ BASE DE DATOS
 # ==============================
-# - En local usa SQLite
-# - En Render usa PostgreSQL automáticamente (DATABASE_URL)
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
@@ -125,9 +107,7 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 6,
-        },
+        'OPTIONS': {'min_length': 6},
     },
 ]
 
@@ -142,37 +122,45 @@ USE_TZ = True
 
 
 # ==============================
-# 📁 ARCHIVOS ESTÁTICOS (CSS, JS)
+# 📁 ARCHIVOS ESTÁTICOS
 # ==============================
 STATIC_URL = 'static/'
 
-# WhiteNoise en producción
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # ==============================
-# 📁 ARCHIVOS MEDIA (IMÁGENES)
+# 📁 ARCHIVOS MEDIA (AWS S3)
 # ==============================
-MEDIA_URL = '/media/'
 
-# En Render conviene apuntar MEDIA_ROOT a un disco persistente si existe.
-# Prioridad:
-# 1. MEDIA_ROOT explícito por variable de entorno
-# 2. RENDER_DISK_PATH/media si el servicio tiene disco montado
-# 3. Carpeta local del proyecto como fallback
-CUSTOM_MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '').strip()
-RENDER_DISK_PATH = os.environ.get('RENDER_DISK_PATH', '').strip()
+# ******************************
+# ******************************
+# 🔥 AWS S3 CONFIG (IMÁGENES)
+# ******************************
+# ******************************
 
-if CUSTOM_MEDIA_ROOT:
-    MEDIA_ROOT = CUSTOM_MEDIA_ROOT
-elif RENDER_DISK_PATH:
-    MEDIA_ROOT = os.path.join(RENDER_DISK_PATH, 'media')
-else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
-os.makedirs(MEDIA_ROOT, exist_ok=True)
+AWS_STORAGE_BUCKET_NAME = "tu-bucket-restaurante"
+AWS_S3_REGION_NAME = "us-east-2"
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+
+# ******************************
+# ******************************
+# 🚀 FIN AWS
+# ******************************
+# ******************************
 
 
 # ==============================
@@ -204,21 +192,18 @@ RECAPTCHA_PRIVATE_KEY = os.environ.get(
 
 
 # ==============================
-# 🍽️ API EXTERNA (SPOONACULAR)
+# 🍽️ API EXTERNA
 # ==============================
 SPOONACULAR_API_KEY = os.environ.get('SPOONACULAR_API_KEY', '').strip()
 
 
 # ==============================
-# 📧 CONFIGURACIÓN DE EMAIL
+# 📧 EMAIL
 # ==============================
-# ⚠️ IMPORTANTE:
-# En producción debes configurar estas variables en Render
-
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').strip().lower() in {'1', 'true', 'yes', 'on'}
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in {'1','true','yes','on'}
 
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '').strip()
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '').strip()
@@ -230,3 +215,6 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER).strip
 # 🔕 IGNORAR ERROR DE RECAPTCHA
 # ==============================
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+
+
+# ==============================
