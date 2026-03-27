@@ -53,6 +53,14 @@ class ProductoFormTests(TestCase):
         self.assertEqual(form.fields["categoria"].widget.attrs["class"], "form-select")
         self.assertEqual(form.fields["disponible"].widget.attrs["class"], "form-check-input")
 
+    def test_crea_categorias_base_si_no_existen(self):
+        self.assertFalse(Categoria.objects.exists())
+
+        form = ProductoForm()
+
+        self.assertTrue(Categoria.objects.exists())
+        self.assertGreater(form.fields['categoria'].queryset.count(), 0)
+
 
 class CartaViewsTests(CartaBaseTestCase):
     def test_lista_productos_filtra_por_categoria_busqueda_y_promocion(self):
@@ -189,6 +197,26 @@ class CartaViewsTests(CartaBaseTestCase):
         response = self.client.post(reverse("eliminar_producto", args=[creado.id]))
         self.assertRedirects(response, reverse("lista_productos"))
         self.assertFalse(Producto.objects.filter(id=creado.id).exists())
+
+    def test_crear_producto_auto_crea_categorias_base(self):
+        Categoria.objects.all().delete()
+        self.client.force_login(self.staff)
+
+        response = self.client.get(reverse('crear_producto'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Categoria.objects.exists())
+
+    def test_cargar_catalogo_demo_crea_productos_de_prueba(self):
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()
+        self.client.force_login(self.staff)
+
+        response = self.client.post(reverse('cargar_catalogo_demo'))
+
+        self.assertRedirects(response, reverse('crear_producto'))
+        self.assertTrue(Categoria.objects.exists())
+        self.assertGreaterEqual(Producto.objects.count(), 6)
 
     def test_carta_pdf_devuelve_error_si_no_esta_xhtml2pdf(self):
         with mock.patch.dict("sys.modules", {"xhtml2pdf": None}):

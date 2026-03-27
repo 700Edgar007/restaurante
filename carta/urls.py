@@ -5,6 +5,7 @@ from .views import (
     agregar_premium_al_carrito,
     actualizar_carrito,
     carta_pdf,
+    cargar_catalogo_demo,
     crear_producto,
     editar_producto,
     eliminar_producto,
@@ -24,6 +25,7 @@ urlpatterns = [
     path("menu-api-temporal/", menu_api_temporal, name="menu_api_temporal"),
     path("carta-pdf/", carta_pdf, name="carta_pdf"),
     path('gestion/carta/nuevo/', crear_producto, name='crear_producto'),
+    path('gestion/carta/demo/', cargar_catalogo_demo, name='cargar_catalogo_demo'),
     path('gestion/carta/<int:producto_id>/editar/', editar_producto, name='editar_producto'),
     path('gestion/carta/<int:producto_id>/eliminar/', eliminar_producto, name='eliminar_producto'),
 ]

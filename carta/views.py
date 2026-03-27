@@ -18,7 +18,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from clientes.models import Promocion
 from .forms import ProductoForm
-from .models import Producto, Categoria
+from .models import Categoria, Producto, asegurar_categorias_base, poblar_productos_demo
 
 
 def _consumir_json(url, headers=None, timeout=12):
@@ -309,6 +309,11 @@ def quitar_del_carrito(request, producto_id):
 @login_required
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def crear_producto(request):
+    _, categorias_creadas = asegurar_categorias_base()
+
+    if categorias_creadas:
+        messages.info(request, 'Se crearon categorias base para que ya puedas registrar productos desde este formulario.')
+
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -319,6 +324,18 @@ def crear_producto(request):
         form = ProductoForm()
 
     return render(request, 'carta/crear_producto.html', {'form': form})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+@require_POST
+def cargar_catalogo_demo(request):
+    creados = poblar_productos_demo()
+    if creados:
+        messages.success(request, f'Se cargaron {creados} productos de prueba con categorias base.')
+    else:
+        messages.info(request, 'Ya habia productos de prueba cargados o nombres equivalentes en la carta.')
+    return redirect('crear_producto')
 
 
 @login_required

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Producto
+from .models import Producto, asegurar_categorias_base
 
 
 class ProductoForm(forms.ModelForm):
@@ -9,6 +9,7 @@ class ProductoForm(forms.ModelForm):
         fields = ('nombre', 'descripcion', 'precio', 'imagen', 'disponible', 'categoria')
 
     def __init__(self, *args, **kwargs):
+        asegurar_categorias_base()
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             css = 'form-select' if isinstance(field.widget, forms.Select) else 'form-control'

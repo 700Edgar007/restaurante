@@ -65,6 +65,10 @@
                             <button class="btn btn-sm btn-outline-dark" type="submit">Filtrar</button>
                         </form>
                         <a href="{% url 'crear_producto' %}" class="btn btn-main">Nuevo producto</a>
+                        <form method="post" action="{% url 'cargar_catalogo_demo' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-dark">Cargar demo carta</button>
+                        </form>
                         <a href="/admin/" class="btn btn-outline-dark">Ir a Django admin</a>
                     </div>
                 </div>
