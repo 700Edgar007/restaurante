@@ -40,6 +40,50 @@
         color: #6f2f25;
     }
 
+    .preview-btn {
+        border-radius: 12px;
+        border: 1px solid #d8c6aa;
+        background: #fff8ee;
+        color: #7a4330;
+        font-weight: 600;
+    }
+
+    .preview-btn:hover {
+        background: #f6e8d4;
+        color: #5a2c1f;
+    }
+
+    .preview-media {
+        width: 100%;
+        max-height: 320px;
+        object-fit: cover;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #f4e3c6, #fff8ee);
+    }
+
+    .preview-placeholder {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #f4e3c6, #fff8ee);
+        color: #8d5b40;
+        font-weight: 600;
+    }
+
+    .preview-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .45rem .85rem;
+        border-radius: 999px;
+        background: #fff4de;
+        color: #7a4330;
+        font-size: .92rem;
+        font-weight: 600;
+    }
+
     @keyframes aparecer {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -136,7 +180,22 @@
                                 <button type="button" class="qty-btn js-qty-plus">+</button>
                             </div>
                         </div>
-                        <div class="col-8 d-grid">
+                        <div class="col-4 d-grid">
+                            <button
+                                type="button"
+                                class="btn preview-btn js-product-preview"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalPreviewProducto"
+                                data-producto-nombre="{{ producto.nombre|escape }}"
+                                data-producto-descripcion="{{ producto.descripcion|escape }}"
+                                data-producto-precio="${{ producto.precio|floatformat:2 }}"
+                                data-producto-categoria="{{ producto.categoria.nombre|default:'Sin categoria'|escape }}"
+                                data-producto-imagen="{% if producto.imagen %}{{ producto.imagen.url }}{% endif %}"
+                            >
+                                <i class="bi bi-eye"></i> Ver
+                            </button>
+                        </div>
+                        <div class="col-4 d-grid">
                             <button type="submit" class="btn btn-success w-100"><i class="bi bi-cart-plus"></i> Agregar al carrito</button>
                         </div>
                     </form>
@@ -156,6 +215,40 @@
     {% empty %}
         <p>No hay productos disponibles.</p>
     {% endfor %}
+</div>
+
+<div class="modal fade" id="modalPreviewProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <p class="text-uppercase small text-muted mb-1">Vista previa del plato</p>
+                    <h5 class="modal-title fw-bold" id="previewProductoNombre">Producto</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <div class="row g-4 align-items-start">
+                    <div class="col-md-6">
+                        <img id="previewProductoImagen" class="preview-media d-none" alt="Vista previa del producto">
+                        <div id="previewProductoPlaceholder" class="preview-placeholder">
+                            <span><i class="bi bi-image me-2"></i>Sin foto disponible</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="preview-pill"><i class="bi bi-bookmark-star"></i> <span id="previewProductoCategoria">Categoria</span></span>
+                            <span class="preview-pill"><i class="bi bi-cash-coin"></i> <span id="previewProductoPrecio">$0.00</span></span>
+                        </div>
+                        <p id="previewProductoDescripcion" class="text-muted mb-0">Descripcion del producto.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-main" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -184,6 +277,33 @@
     document.querySelectorAll('form[action*="/agregar/"]').forEach((form) => {
         form.addEventListener('submit', () => {
             localStorage.setItem('cart-bump', '1');
+        });
+    });
+
+    const previewButtons = document.querySelectorAll('.js-product-preview');
+    const previewNombre = document.getElementById('previewProductoNombre');
+    const previewDescripcion = document.getElementById('previewProductoDescripcion');
+    const previewPrecio = document.getElementById('previewProductoPrecio');
+    const previewCategoria = document.getElementById('previewProductoCategoria');
+    const previewImagen = document.getElementById('previewProductoImagen');
+    const previewPlaceholder = document.getElementById('previewProductoPlaceholder');
+
+    previewButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            previewNombre.textContent = button.dataset.productoNombre || 'Producto';
+            previewDescripcion.textContent = button.dataset.productoDescripcion || 'Sin descripcion disponible.';
+            previewPrecio.textContent = button.dataset.productoPrecio || '$0.00';
+            previewCategoria.textContent = button.dataset.productoCategoria || 'Sin categoria';
+
+            if (button.dataset.productoImagen) {
+                previewImagen.src = button.dataset.productoImagen;
+                previewImagen.classList.remove('d-none');
+                previewPlaceholder.classList.add('d-none');
+            } else {
+                previewImagen.src = '';
+                previewImagen.classList.add('d-none');
+                previewPlaceholder.classList.remove('d-none');
+            }
         });
     });
 </script>
