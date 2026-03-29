@@ -5,51 +5,149 @@
 {% block extra_styles %}
 <style>
     #mapa-perfil {
-        height: 280px;
-        border-radius: 16px;
+        height: 300px;
+        border-radius: 24px;
     }
 
-    .card-soft {
-        border: 0;
-        border-radius: 20px;
-        box-shadow: 0 12px 30px rgba(70, 40, 20, 0.12);
+    .perfil-page {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .perfil-hero {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .perfil-hero::after {
+        content: "";
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        right: -90px;
+        top: -90px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.24), transparent 72%);
+        pointer-events: none;
+    }
+
+    .perfil-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 1.25rem;
+    }
+
+    .avatar-main {
+        width: 94px;
+        height: 94px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 230, 188, 0.72);
+        background: #fff;
+        object-fit: cover;
+        box-shadow: 0 14px 28px rgba(102, 29, 19, 0.18);
+    }
+
+    .nivel {
+        margin: 0;
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #fffdf8;
+    }
+
+    .stat-card {
+        border-radius: 24px;
+        background: rgba(255, 248, 236, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        padding: 1rem;
+        height: 100%;
+    }
+
+    .stat-label {
+        color: rgba(255, 242, 221, 0.78);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .stat-value {
+        color: #fffdf8;
+        font-size: 1.55rem;
+        font-weight: 800;
+    }
+
+    .perfil-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.85fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .perfil-stack {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .perfil-card {
+        border-radius: 30px;
+        padding: 1.5rem;
+        background: linear-gradient(180deg, rgba(255, 251, 246, 0.96), rgba(255, 244, 230, 0.9));
+        border: 1px solid rgba(133, 45, 21, 0.08);
+        box-shadow: var(--sombra-suave);
+    }
+
+    .beneficio-box {
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(255, 251, 246, 0.96), rgba(255, 236, 210, 0.92));
+        border: 1px solid rgba(133, 45, 21, 0.08);
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .ruleta-section {
+        position: relative;
+        overflow: hidden;
     }
 
     .ruleta {
-        width: 280px;
-        height: 280px;
+        width: 300px;
+        height: 300px;
         border-radius: 50%;
-        border: 10px solid #fff7e8;
+        border: 12px solid rgba(255, 244, 229, 0.92);
         margin: 0 auto;
         background: conic-gradient(
-            #f6c760 0deg 60deg,
-            #ffd98d 60deg 120deg,
-            #f4a85b 120deg 180deg,
-            #ef8354 180deg 240deg,
-            #f7d488 240deg 300deg,
-            #f2b179 300deg 360deg
+            #f5c04f 0deg 60deg,
+            #f7dd84 60deg 120deg,
+            #d13e1a 120deg 180deg,
+            #f4a41a 180deg 240deg,
+            #f8d06f 240deg 300deg,
+            #b42318 300deg 360deg
         );
         transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
-        box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.6), 0 18px 35px rgba(120, 60, 22, 0.25);
+        box-shadow: 0 0 0 10px rgba(255, 250, 242, 0.88), 0 22px 42px rgba(120, 60, 22, 0.22);
     }
 
     .ruleta::after {
         content: "";
-        width: 56px;
-        height: 56px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         position: absolute;
         inset: 0;
         margin: auto;
-        background: #fff;
-        border: 3px solid #d7a857;
-        box-shadow: 0 6px 14px rgba(139, 58, 46, 0.28);
+        background: #fff8ef;
+        border: 4px solid rgba(180, 35, 24, 0.18);
+        box-shadow: 0 10px 18px rgba(139, 58, 46, 0.18);
     }
 
     .ruleta-wrap {
         position: relative;
-        width: 280px;
+        width: 300px;
         margin: 0 auto;
     }
 
@@ -57,18 +155,18 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        font-size: 0.68rem;
-        font-weight: 700;
-        color: #5d301f;
-        background: rgba(255, 255, 255, 0.84);
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--primario-profundo);
+        background: rgba(255, 251, 244, 0.86);
         border-radius: 999px;
-        padding: 0.22rem 0.45rem;
+        padding: 0.24rem 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 74px;
-        border: 1px solid #e9c78d;
-        transform: translate(-50%, -50%) rotate(var(--angulo)) translateY(-94px) rotate(calc(-1 * var(--angulo)));
+        min-width: 78px;
+        border: 1px solid rgba(133, 45, 21, 0.1);
+        transform: translate(-50%, -50%) rotate(var(--angulo)) translateY(-102px) rotate(calc(-1 * var(--angulo)));
         transform-origin: center;
     }
 
@@ -79,142 +177,103 @@
     .s5 { --angulo: 270deg; }
     .s6 { --angulo: 330deg; }
 
+    .puntero {
+        width: 0;
+        height: 0;
+        border-left: 16px solid transparent;
+        border-right: 16px solid transparent;
+        border-bottom: 24px solid var(--primario-profundo);
+        margin: 0 auto 12px;
+    }
+
     .leyenda-premios {
         margin-top: 1rem;
-        border: 1px solid #ead6ba;
-        border-radius: 14px;
-        background: #fff8ec;
-        padding: 0.95rem;
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(255, 251, 246, 0.98), rgba(255, 236, 210, 0.92));
+        border: 1px solid rgba(133, 45, 21, 0.08);
+        padding: 1rem;
     }
 
     .leyenda-item {
         display: grid;
         grid-template-columns: auto 1fr;
+        gap: 0.6rem;
         align-items: center;
-        gap: 0.55rem;
-        font-size: 0.9rem;
-        padding: 0.34rem 0;
+        padding: 0.38rem 0;
+    }
+
+    .premio-chip,
+    .premio-valor {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.28rem 0.65rem;
+        border-radius: 999px;
+        font-weight: 800;
     }
 
     .premio-chip {
-        border-radius: 999px;
-        border: 1px solid #e1c8a6;
-        background: #fffdf8;
-        color: #6a3026;
-        font-weight: 700;
-        font-size: 0.78rem;
-        padding: 0.2rem 0.52rem;
-        min-width: 92px;
-        text-align: center;
+        min-width: 96px;
+        background: linear-gradient(135deg, rgba(180, 35, 24, 0.08), rgba(245, 158, 11, 0.2));
+        color: var(--primario-profundo);
     }
 
     .premio-desc {
-        color: #6d5a4b;
-        font-size: 0.84rem;
-        line-height: 1.3;
+        color: var(--texto-suave);
+        font-size: 0.9rem;
     }
 
     .premio-pendiente {
-        border-radius: 12px;
-        border: 1px solid #efdfca;
-        background: #fffdf8;
-        margin-bottom: 0.45rem;
-        padding: 0.55rem 0.7rem;
+        border-radius: 18px;
+        margin-bottom: 0.55rem;
+        padding: 0.7rem 0.8rem;
+        background: rgba(255, 250, 244, 0.9);
+        border: 1px solid rgba(133, 45, 21, 0.08);
     }
 
     .premio-valor {
-        border-radius: 999px;
-        padding: 0.18rem 0.48rem;
-        border: 1px solid #dfc7a7;
-        background: #fff5e7;
-        color: #6f3328;
-        font-size: 0.8rem;
-        font-weight: 800;
-    }
-
-    .beneficio-box {
-        border: 1px dashed #d8be97;
-        border-radius: 14px;
-        background: #fff9ef;
-        padding: 0.8rem;
-        font-size: 0.92rem;
-    }
-
-    .perfil-page {
-        font-size: 1.05rem;
-    }
-
-    .perfil-page .small {
-        font-size: 0.94rem !important;
-    }
-
-    .perfil-page .text-muted {
-        font-size: 0.98rem;
+        background: linear-gradient(135deg, rgba(180, 35, 24, 0.08), rgba(245, 158, 11, 0.22));
+        color: var(--primario-profundo);
+        font-size: 0.82rem;
     }
 
     .premios-scroll {
-        max-height: 280px;
+        max-height: 300px;
         overflow-y: auto;
     }
 
-    .puntero {
-        width: 0;
-        height: 0;
-        border-left: 14px solid transparent;
-        border-right: 14px solid transparent;
-        border-bottom: 20px solid #8b3a2e;
-        margin: 0 auto 10px;
-    }
-
-    .nivel {
-        font-size: 1.75rem;
-        font-weight: 800;
-    }
-
-    .stat-card {
-        border: 0;
-        border-radius: 16px;
-        background: linear-gradient(180deg, #fffdf9, #fff4e4);
-        box-shadow: 0 8px 18px rgba(70, 40, 20, 0.1);
-        padding: 1rem;
-        height: 100%;
-    }
-
-    .stat-label {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        color: #8d6c4b;
-    }
-
-    .stat-value {
-        font-size: 1.35rem;
-        font-weight: 800;
-        color: #5a281f;
-    }
-
-    .avatar-main {
-        width: 82px;
-        height: 82px;
-        border-radius: 50%;
-        border: 2px solid #e5ccab;
-        background: #fff;
-        object-fit: cover;
-    }
-
     .avatar-option {
-        border: 1px solid #e6cfb0;
-        border-radius: 12px;
-        background: #fff;
-        padding: 0.5rem;
+        border: 1px solid rgba(133, 45, 21, 0.08);
+        border-radius: 18px;
+        background: rgba(255, 250, 244, 0.9);
+        padding: 0.65rem;
     }
 
     .avatar-option img {
-        width: 44px;
-        height: 44px;
+        width: 46px;
+        height: 46px;
         border-radius: 50%;
-        border: 1px solid #ecdac2;
         background: #fff;
+    }
+
+    @media (max-width: 1199.98px) {
+        .perfil-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .ruleta,
+        .ruleta-wrap {
+            width: 260px;
+            height: 260px;
+        }
+
+        .seg {
+            min-width: 72px;
+            font-size: 0.66rem;
+            transform: translate(-50%, -50%) rotate(var(--angulo)) translateY(-88px) rotate(calc(-1 * var(--angulo)));
+        }
     }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -222,275 +281,274 @@
 
 {% block content %}
 <div class="perfil-page">
-<div class="card card-soft p-4 mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-4 bg-dark text-white">
-            <i class="bi bi-shop"></i>
-            <span class="fw-bold">Antojópolis</span>
-        </div>
-        <span class="badge text-bg-warning">Programa de fidelizacion activo</span>
-    </div>
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="d-flex align-items-center gap-3">
-            <img src="{{ perfil.avatar_url }}" alt="Avatar de {{ perfil.usuario.username }}" class="avatar-main">
-            <div>
-            <p class="text-muted mb-1">Hola</p>
-            <h3 class="fw-bold mb-0">{{ perfil.usuario.first_name|default:perfil.usuario.username }}</h3>
-            </div>
-        </div>
-        <p class="nivel mb-0">Nivel {{ perfil.nivel }}</p>
-    </div>
-
-    <div class="row g-3 mt-1">
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-label">Puntos</div>
-                <div id="puntos-actuales" class="stat-value">{{ perfil.puntos }}</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-label">Pedidos</div>
-                <div class="stat-value">{{ total_pedidos }}</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-label">Consumo total</div>
-                <div class="stat-value">${{ total_gastado }}</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card">
-                <div class="stat-label">Giros disponibles</div>
-                <div class="stat-value">{{ oportunidades_disponibles|length }}</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4">
-    <div class="col-xl-7">
-        <div class="card card-soft p-4 mb-4">
-            <h5 class="fw-bold mb-2">¿Cómo ganas y usas tus puntos?</h5>
-            <p class="text-muted mb-2">
-                Por cada <strong>$2.000</strong> que consumes en el restaurante acumulas <strong>1 punto de fidelización</strong>.
-                Estos puntos te ayudan a subir de nivel y desbloquear mejores beneficios.
-            </p>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="beneficio-box h-100">
-                        <p class="fw-semibold mb-2">Niveles y requisitos</p>
-                        <ul class="mb-0 ps-3 small">
-                            <li><strong>Bronce</strong>: 0 a 149 puntos.</li>
-                            <li><strong>Plata</strong>: desde 150 puntos.</li>
-                            <li><strong>Oro</strong>: desde 450 puntos.</li>
-                            <li><strong>VIP</strong>: desde 900 puntos.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="beneficio-box h-100">
-                        <p class="fw-semibold mb-2">Beneficios por nivel</p>
-                        <ul class="mb-0 ps-3 small">
-                            <li><strong>Bronce</strong>: acceso a promociones básicas y ruleta ocasional.</li>
-                            <li><strong>Plata</strong>: mejores oportunidades en la ruleta y cupones frecuentes.</li>
-                            <li><strong>Oro</strong>: descuentos destacados y prioridad en nuevas promociones.</li>
-                            <li><strong>VIP</strong>: beneficios exclusivos, grandes descuentos y sorpresas especiales.</li>
-                        </ul>
-                    </div>
+    <section class="page-banner perfil-hero">
+        <div class="perfil-head">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ perfil.avatar_url }}" alt="Avatar de {{ perfil.usuario.username }}" class="avatar-main">
+                <div>
+                    <span class="eyebrow mb-2"><i class="bi bi-person-heart"></i>Programa activo</span>
+                    <h1 class="section-heading mb-1" style="font-size: clamp(2rem, 4vw, 3rem);">Hola, {{ perfil.usuario.first_name|default:perfil.usuario.username }}</h1>
+                    <p class="mb-0" style="color: rgba(255, 244, 229, 0.86);">Tu perfil concentra puntos, premios, giros y todo lo que hace que volver a Antojopolis valga más.</p>
                 </div>
             </div>
-            <div class="beneficio-box mt-3">
-                <p class="fw-semibold mb-2">Beneficios activos en tu nivel actual ({{ perfil.nivel }})</p>
-                <div class="d-flex flex-wrap gap-2 mb-2">
-                    <span class="badge text-bg-success">{{ promociones_disponibles_ids|length }} promociones disponibles</span>
-                    <span class="badge text-bg-primary">{{ promociones_exclusivas_count }} exclusivas de tu nivel</span>
-                    <span class="badge text-bg-dark">Mejor descuento visible: {{ mejor_descuento_nivel }}%</span>
-                </div>
-                {% if perfil.nivel == 'VIP' and promociones_exclusivas_count == 0 %}
-                    <p class="small text-muted mb-0">Tu cuenta ya es VIP, pero actualmente no hay promociones marcadas como VIP en catalogo. Puedes crear ofertas especiales desde gestion para que aparezcan aqui.</p>
-                {% else %}
-                    <p class="small text-muted mb-0">Estas cifras se calculan con las promociones vigentes que realmente puede usar tu cuenta hoy.</p>
-                {% endif %}
-            </div>
+            <p class="nivel">Nivel {{ perfil.nivel }}</p>
         </div>
 
-        <div class="card card-soft p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0">Ruleta de fidelidad</h5>
-                <span id="badge-giros" class="badge text-bg-warning">{{ oportunidades_disponibles|length }} giros disponibles</span>
-            </div>
-            <p class="text-muted">Las bonificaciones se otorgan por compras acumuladas: cada $100,000 desbloqueas giro extra y descuento.</p>
-
-            <div class="beneficio-box mb-3">
-                <div><strong>Siguiente umbral:</strong> ${{ objetivo_compra|floatformat:0 }} en compras acumuladas.</div>
-                <div><strong>Te faltan:</strong> ${{ faltante_compra_bono|floatformat:0 }} para recibir nuevas bonificaciones.</div>
-            </div>
-
-            <div class="puntero"></div>
-            <div class="ruleta-wrap">
-                <div id="ruleta" class="ruleta">
-                    <span class="seg s1">5%</span>
-                    <span class="seg s2">10%</span>
-                    <span class="seg s3">+15 pts</span>
-                    <span class="seg s4">+30 pts</span>
-                    <span class="seg s5">Giro +1</span>
-                    <span class="seg s6">20%</span>
+        <div class="row g-3 mt-1">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-label">Puntos</div>
+                    <div id="puntos-actuales" class="stat-value">{{ perfil.puntos }}</div>
                 </div>
             </div>
-
-            <div class="text-center mt-3">
-                {% if oportunidades_disponibles %}
-                    <button id="btn-girar" class="btn btn-main">Girar ruleta</button>
-                {% else %}
-                    <button class="btn btn-secondary" disabled>Sin giros por ahora</button>
-                {% endif %}
-                <p id="resultado-ruleta" class="mt-3 mb-0 fw-semibold"></p>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-label">Pedidos</div>
+                    <div class="stat-value">{{ total_pedidos }}</div>
+                </div>
             </div>
-
-            <div class="leyenda-premios">
-                <div class="small fw-bold mb-2">Recompensas posibles</div>
-                {% for premio in ruleta_premios %}
-                    <div class="leyenda-item">
-                        <span class="premio-chip">{{ premio.etiqueta }}</span>
-                        <span class="premio-desc">{{ premio.descripcion }}</span>
-                    </div>
-                {% endfor %}
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-label">Consumo total</div>
+                    <div class="stat-value">${{ total_gastado }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-label">Giros</div>
+                    <div class="stat-value">{{ oportunidades_disponibles|length }}</div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="card card-soft p-4 mt-4">
-            <h5 class="fw-bold mb-3">Promociones vigentes</h5>
-            <p class="small text-muted mb-3">Primero veras las promociones disponibles para tu nivel y despues las bloqueadas.</p>
-            <div class="row g-3">
-                {% for promo in promociones %}
+    <div class="perfil-grid">
+        <div class="perfil-stack">
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-graph-up"></i>Como funciona</span>
+                <h2 class="h3 mb-2">Ganas y usas tus puntos en un sistema más claro</h2>
+                <p class="text-muted mb-3">Por cada <strong>$2.000</strong> que consumes en el restaurante acumulas <strong>1 punto</strong>. Con esos puntos subes de nivel y desbloqueas beneficios mejores.</p>
+                <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="border rounded-4 p-3 h-100 bg-light">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <p class="mb-0 small text-muted">Desde nivel {{ promo.nivel_minimo }}</p>
-                                {% if promo.id in promociones_disponibles_ids %}
-                                    <span class="badge text-bg-success">Disponible</span>
-                                {% else %}
-                                    <span class="badge text-bg-secondary">Bloqueada</span>
-                                {% endif %}
-                            </div>
-                            <h6 class="fw-bold mb-1">{{ promo.titulo }}</h6>
-                            <p class="small mb-0">{{ promo.descripcion }}</p>
+                        <div class="beneficio-box h-100">
+                            <p class="fw-semibold mb-2">Niveles y requisitos</p>
+                            <ul class="mb-0 ps-3 small">
+                                <li><strong>Bronce</strong>: 0 a 149 puntos.</li>
+                                <li><strong>Plata</strong>: desde 150 puntos.</li>
+                                <li><strong>Oro</strong>: desde 450 puntos.</li>
+                                <li><strong>VIP</strong>: desde 900 puntos.</li>
+                            </ul>
                         </div>
                     </div>
-                {% empty %}
-                    <p class="text-muted mb-0">No hay promociones activas en este momento.</p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+                    <div class="col-md-6">
+                        <div class="beneficio-box h-100">
+                            <p class="fw-semibold mb-2">Beneficios por nivel</p>
+                            <ul class="mb-0 ps-3 small">
+                                <li><strong>Bronce</strong>: promociones básicas y ruleta ocasional.</li>
+                                <li><strong>Plata</strong>: mejores oportunidades y cupones frecuentes.</li>
+                                <li><strong>Oro</strong>: descuentos destacados y prioridad en nuevas promos.</li>
+                                <li><strong>VIP</strong>: beneficios exclusivos, grandes descuentos y sorpresas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="beneficio-box mt-3">
+                    <p class="fw-semibold mb-2">Beneficios activos en tu nivel actual ({{ perfil.nivel }})</p>
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <span class="status-pill">{{ promociones_disponibles_ids|length }} promociones disponibles</span>
+                        <span class="status-pill">{{ promociones_exclusivas_count }} exclusivas de tu nivel</span>
+                        <span class="status-pill">Mejor descuento visible: {{ mejor_descuento_nivel }}%</span>
+                    </div>
+                    {% if perfil.nivel == 'VIP' and promociones_exclusivas_count == 0 %}
+                        <p class="small text-muted mb-0">Tu cuenta ya es VIP, pero actualmente no hay promociones marcadas como VIP en catálogo.</p>
+                    {% else %}
+                        <p class="small text-muted mb-0">Estas cifras se calculan con las promociones vigentes que realmente puede usar tu cuenta hoy.</p>
+                    {% endif %}
+                </div>
+            </section>
 
-    <div class="col-xl-5">
-        <div class="card card-soft p-4">
-            <h5 class="fw-bold mb-3">Premios pendientes</h5>
-            {% if premios_count > 20 %}
-                <p class="small text-muted">Mostrando 20 de {{ premios_count }} premios pendientes.</p>
-            {% endif %}
-            <div class="premios-scroll">
+            <section class="perfil-card ruleta-section">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <span class="eyebrow text-dark" style="background: rgba(245, 158, 11, 0.16); color: var(--primario-profundo);"><i class="bi bi-disc"></i>Ruleta de fidelidad</span>
+                        <h2 class="h3 mb-1">Un giro con sabor a premio</h2>
+                    </div>
+                    <span id="badge-giros" class="status-pill">{{ oportunidades_disponibles|length }} giros disponibles</span>
+                </div>
+                <p class="text-muted">Las bonificaciones se otorgan por compras acumuladas: cada $100,000 desbloqueas giro extra y descuento.</p>
+
+                <div class="beneficio-box mb-3">
+                    <div><strong>Siguiente umbral:</strong> ${{ objetivo_compra|floatformat:0 }} en compras acumuladas.</div>
+                    <div><strong>Te faltan:</strong> ${{ faltante_compra_bono|floatformat:0 }} para recibir nuevas bonificaciones.</div>
+                </div>
+
+                <div class="puntero"></div>
+                <div class="ruleta-wrap">
+                    <div id="ruleta" class="ruleta">
+                        <span class="seg s1">5%</span>
+                        <span class="seg s2">10%</span>
+                        <span class="seg s3">+15 pts</span>
+                        <span class="seg s4">+30 pts</span>
+                        <span class="seg s5">Giro +1</span>
+                        <span class="seg s6">20%</span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    {% if oportunidades_disponibles %}
+                        <button id="btn-girar" class="btn btn-main">Girar ruleta</button>
+                    {% else %}
+                        <button class="btn btn-outline-dark" disabled>Sin giros por ahora</button>
+                    {% endif %}
+                    <p id="resultado-ruleta" class="mt-3 mb-0 fw-semibold"></p>
+                </div>
+
+                <div class="leyenda-premios">
+                    <div class="small fw-bold mb-2">Recompensas posibles</div>
+                    {% for premio in ruleta_premios %}
+                        <div class="leyenda-item">
+                            <span class="premio-chip">{{ premio.etiqueta }}</span>
+                            <span class="premio-desc">{{ premio.descripcion }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-gift"></i>Promociones vigentes</span>
+                <h2 class="h3 mb-2">Promociones ordenadas según tu acceso real</h2>
+                <p class="small text-muted mb-3">Primero verás las promociones disponibles para tu nivel y después las bloqueadas.</p>
+                <div class="row g-3">
+                    {% for promo in promociones %}
+                        <div class="col-md-6">
+                            <div class="beneficio-box h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <p class="mb-0 small text-muted">Desde nivel {{ promo.nivel_minimo }}</p>
+                                    {% if promo.id in promociones_disponibles_ids %}
+                                        <span class="status-pill">Disponible</span>
+                                    {% else %}
+                                        <span class="metric-chip" style="color: var(--primario-profundo); background: rgba(180, 35, 24, 0.08); border-color: transparent;">Bloqueada</span>
+                                    {% endif %}
+                                </div>
+                                <h6 class="fw-bold mb-1">{{ promo.titulo }}</h6>
+                                <p class="small mb-0 text-muted">{{ promo.descripcion }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted mb-0">No hay promociones activas en este momento.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <div class="perfil-stack">
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(245, 158, 11, 0.16); color: var(--primario-profundo);"><i class="bi bi-award"></i>Premios pendientes</span>
+                <h2 class="h3 mb-2">Lo que ya te ganaste</h2>
+                {% if premios_count > 20 %}
+                    <p class="small text-muted">Mostrando 20 de {{ premios_count }} premios pendientes.</p>
+                {% endif %}
+                <div class="premios-scroll">
+                    <ul class="list-group list-group-flush">
+                        {% for premio in premios %}
+                            <li class="list-group-item bg-transparent d-flex justify-content-between premio-pendiente">
+                                <span>{{ premio.descripcion }}</span>
+                                {% if premio.tipo == 'DESCUENTO' %}
+                                    <strong class="premio-valor">{{ premio.descuento_porcentaje }}%</strong>
+                                {% else %}
+                                    <strong class="premio-valor">+{{ premio.puntos }} pts</strong>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item bg-transparent">No tienes premios activos.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-clock-history"></i>Historial</span>
+                <h2 class="h3 mb-2">Tus beneficios recientes</h2>
                 <ul class="list-group list-group-flush">
-                    {% for premio in premios %}
-                        <li class="list-group-item bg-transparent d-flex justify-content-between premio-pendiente">
-                            <span>{{ premio.descripcion }}</span>
-                            {% if premio.tipo == 'DESCUENTO' %}
-                                <strong class="premio-valor">{{ premio.descuento_porcentaje }}%</strong>
+                    {% for giro in historial_ruleta %}
+                        <li class="list-group-item bg-transparent d-flex justify-content-between">
+                            <span>{{ giro.accion_legible }} - {{ giro.premio }}</span>
+                            {% if giro.puntos_otorgados > 0 %}
+                                <strong>+{{ giro.puntos_otorgados }} pts</strong>
                             {% else %}
-                                <strong class="premio-valor">+{{ premio.puntos }} pts</strong>
+                                <strong class="text-muted">Beneficio aplicado</strong>
                             {% endif %}
                         </li>
                     {% empty %}
-                        <li class="list-group-item bg-transparent">No tienes premios activos.</li>
+                        <li class="list-group-item bg-transparent">Aun no has reclamado premios de la ruleta.</li>
                     {% endfor %}
                 </ul>
-            </div>
-        </div>
+            </section>
 
-        <div class="card card-soft p-4 mt-4">
-            <h5 class="fw-bold mb-3">Historial de beneficios</h5>
-            <ul class="list-group list-group-flush">
-                {% for giro in historial_ruleta %}
-                    <li class="list-group-item bg-transparent d-flex justify-content-between">
-                        <span>{{ giro.accion_legible }} - {{ giro.premio }}</span>
-                        {% if giro.puntos_otorgados > 0 %}
-                            <strong>+{{ giro.puntos_otorgados }} pts</strong>
-                        {% else %}
-                            <strong class="text-muted">Beneficio aplicado</strong>
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <li class="list-group-item bg-transparent">Aun no has reclamado premios de la ruleta.</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="card card-soft p-4 mt-4">
-            <h5 class="fw-bold mb-3">Personaliza tu avatar</h5>
-            <form method="post" enctype="multipart/form-data" class="row g-2 mb-3">
-                {% csrf_token %}
-                <div class="col-md-6">
-                    <label class="form-label">Estilo</label>
-                    <select name="avatar_estilo" class="form-select">
-                        {% for code, label in avatar_estilos %}
-                            <option value="{{ code }}" {% if perfil.avatar_estilo == code %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Semilla (texto)</label>
-                    <input type="text" name="avatar_semilla" class="form-control" value="{{ perfil.avatar_semilla|default:perfil.usuario.username }}">
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Foto propia (opcional)</label>
-                    <input type="file" name="avatar_foto" class="form-control" accept="image/*">
-                    <small class="text-muted">Si subes una foto, se mostrara en tu perfil sin eliminar los estilos de avatar.</small>
-                </div>
-                {% if perfil.avatar_foto %}
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(245, 158, 11, 0.16); color: var(--primario-profundo);"><i class="bi bi-person-circle"></i>Avatar</span>
+                <h2 class="h3 mb-2">Personaliza tu avatar</h2>
+                <form method="post" enctype="multipart/form-data" class="row g-2 mb-3">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Estilo</label>
+                        <select name="avatar_estilo" class="form-select">
+                            {% for code, label in avatar_estilos %}
+                                <option value="{{ code }}" {% if perfil.avatar_estilo == code %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Semilla (texto)</label>
+                        <input type="text" name="avatar_semilla" class="form-control" value="{{ perfil.avatar_semilla|default:perfil.usuario.username }}">
+                    </div>
                     <div class="col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="quitar-avatar-foto" name="quitar_avatar_foto">
-                            <label class="form-check-label" for="quitar-avatar-foto">
-                                Quitar foto propia y volver al avatar generado
-                            </label>
-                        </div>
+                        <label class="form-label fw-semibold">Foto propia (opcional)</label>
+                        <input type="file" name="avatar_foto" class="form-control" accept="image/*">
+                        <small class="text-muted">Si subes una foto, se mostrará en tu perfil sin eliminar los estilos de avatar.</small>
                     </div>
-                {% endif %}
-                <div class="col-12 d-grid">
-                    <button class="btn btn-main" type="submit">Actualizar avatar</button>
+                    {% if perfil.avatar_foto %}
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="quitar-avatar-foto" name="quitar_avatar_foto">
+                                <label class="form-check-label" for="quitar-avatar-foto">Quitar foto propia y volver al avatar generado</label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="col-12 d-grid">
+                        <button class="btn btn-main" type="submit">Actualizar avatar</button>
+                    </div>
+                </form>
+                <div class="row g-2">
+                    {% for avatar in avatar_sugerencias %}
+                        <div class="col-6">
+                            <div class="avatar-option d-flex align-items-center gap-2">
+                                <img src="{{ avatar.url }}" alt="{{ avatar.nombre }}">
+                                <small>{{ avatar.nombre }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            </form>
-            <div class="row g-2">
-                {% for avatar in avatar_sugerencias %}
-                    <div class="col-6">
-                        <div class="avatar-option d-flex align-items-center gap-2">
-                            <img src="{{ avatar.url }}" alt="{{ avatar.nombre }}">
-                            <small>{{ avatar.nombre }}</small>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+            </section>
 
-        <div class="card card-soft p-4 mt-4">
-            <h5 class="fw-bold mb-2">Mi ubicacion</h5>
-            <p class="text-muted">Selecciona tu ubicacion en el mapa para usarla en domicilios.</p>
-            <div id="mapa-perfil" class="mb-3"></div>
-            <div class="row g-2">
-                <div class="col-md-6">
-                    <input id="direccion-perfil" type="text" class="form-control" placeholder="Direccion referencial" value="{{ perfil.direccion }}">
+            <section class="perfil-card">
+                <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-geo-alt"></i>Mi ubicacion</span>
+                <h2 class="h3 mb-2">Guarda tu punto de entrega</h2>
+                <p class="text-muted">Selecciona tu ubicación en el mapa para usarla en domicilios.</p>
+                <div id="mapa-perfil" class="mb-3"></div>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <input id="direccion-perfil" type="text" class="form-control" placeholder="Direccion referencial" value="{{ perfil.direccion }}">
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button id="btn-buscar-direccion" class="btn btn-outline-dark" type="button">Buscar en mapa</button>
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button id="btn-guardar-ubicacion" class="btn btn-main" type="button">Guardar ubicacion</button>
+                    </div>
                 </div>
-                <div class="col-md-3 d-grid">
-                    <button id="btn-buscar-direccion" class="btn btn-outline-dark" type="button">Buscar en mapa</button>
-                </div>
-                <div class="col-md-3 d-grid">
-                    <button id="btn-guardar-ubicacion" class="btn btn-main" type="button">Guardar ubicacion</button>
-                </div>
-            </div>
-            <small id="msg-ubicacion" class="text-muted mt-2 d-block"></small>
+                <small id="msg-ubicacion" class="text-muted mt-2 d-block"></small>
+            </section>
         </div>
     </div>
 </div>

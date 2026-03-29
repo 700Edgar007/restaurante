@@ -4,69 +4,108 @@
 
 {% block extra_styles %}
 <style>
-    .login-wrap {
-        max-width: 540px;
+    .auth-shell {
+        max-width: 1080px;
         margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 1.5rem;
+        align-items: stretch;
     }
 
-    .login-top {
-        border: 1px solid #e7d6bf;
-        border-radius: 14px;
-        background: #fff8eb;
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+    .auth-showcase {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-showcase::after {
+        content: "";
+        position: absolute;
+        inset: auto -90px -90px auto;
+        width: 260px;
+        height: 260px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.24), transparent 70%);
+        pointer-events: none;
+    }
+
+    .auth-metric {
+        padding: 1rem;
+        border-radius: 22px;
+        background: rgba(255, 245, 232, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: rgba(255, 244, 229, 0.92);
+    }
+
+    .auth-metric strong {
+        display: block;
+        font-size: 1.45rem;
+        color: #fffdf9;
+        margin-bottom: 0.25rem;
+    }
+
+    .auth-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    @media (max-width: 991.98px) {
+        .auth-shell {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-wrap">
-        <div class="text-center mb-3">
-            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-4 bg-dark text-white">
-                <i class="bi bi-shop"></i>
-                <span class="fw-bold">Antojópolis</span>
+<div class="auth-shell">
+    <section class="page-banner auth-showcase">
+        <span class="eyebrow"><i class="bi bi-shield-check"></i>Acceso seguro</span>
+        <h1 class="section-heading mb-2">Vuelve a tu mesa digital de puntos, pedidos y recompensas.</h1>
+        <p class="mb-4" style="max-width: 620px; color: rgba(255, 244, 229, 0.86);">Entra para revisar tu perfil, aprovechar promociones y seguir acumulando beneficios en una carta tan elegante como cercana.</p>
+        <div class="row g-3 mt-1">
+            <div class="col-sm-6">
+                <div class="auth-metric"><strong>Perfil vivo</strong><span>Revisa tu nivel, giros y beneficios en un solo lugar.</span></div>
+            </div>
+            <div class="col-sm-6">
+                <div class="auth-metric"><strong>Compra fluida</strong><span>Tu carrito y tu historial siguen listos apenas entras.</span></div>
             </div>
         </div>
+    </section>
 
-        <div class="login-top d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-shield-check me-1"></i>Acceso seguro</span>
-            <a href="{% url 'registro_usuario' %}" class="small">Crear cuenta</a>
-        </div>
+    <section class="surface-panel auth-panel">
+        <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-person-badge"></i>Bienvenido otra vez</span>
+        <h2 class="h3 mb-2">Inicia sesión</h2>
+        <p class="text-muted mb-4">Ingresa para hacer pedidos, revisar tus puntos y moverte por la experiencia completa.</p>
 
-        <div class="card border-0 shadow-lg rounded-4">
-            <div class="card-body p-4 p-md-5">
-                <h3 class="fw-bold mb-2">Bienvenido otra vez</h3>
-                <p class="text-muted mb-4">Ingresa para revisar tus puntos y hacer pedidos.</p>
+        <form method="post">
+            {% csrf_token %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    {% if next %}
-                        <input type="hidden" name="next" value="{{ next }}">
-                    {% endif %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger py-2">
-                            {{ form.non_field_errors }}
-                        </div>
-                    {% endif %}
-
-                    <div class="mb-3">
-                        <label class="form-label">Correo electronico</label>
-                        {{ form.username }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Contrasena</label>
-                        {{ form.password }}
-                    </div>
-                    <button type="submit" class="btn btn-main w-100">Entrar</button>
-                </form>
-
-                <p class="small text-muted mt-3 mb-0">
-                    Aun no tienes cuenta?
-                    <a href="{% url 'registro_usuario' %}">Registrate aqui</a>.
-                </p>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Correo electronico</label>
+                {{ form.username }}
             </div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Contrasena</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-main w-100">Entrar</button>
+        </form>
+
+        <p class="small text-muted mt-3 mb-0">
+            Aun no tienes cuenta?
+            <a href="{% url 'registro_usuario' %}">Registrate aqui</a>.
+        </p>
+    </section>
 </div>
 {% endblock %}

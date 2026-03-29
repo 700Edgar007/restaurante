@@ -4,133 +4,154 @@
 
 {% block extra_styles %}
 <style>
-    .checkout-card {
-        border: 0;
-        border-radius: 20px;
-        box-shadow: 0 14px 30px rgba(84, 45, 24, 0.12);
-    }
-
-    .order-row td {
-        vertical-align: middle;
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.75fr);
+        gap: 1.5rem;
     }
 
     .summary-box {
-        border: 1px solid #ead3b3;
-        border-radius: 16px;
-        background: #fff8ec;
-        padding: 1rem;
         position: sticky;
-        top: 1rem;
+        top: 104px;
     }
 
     .summary-line {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.45rem;
-        font-size: 0.94rem;
+        align-items: center;
+        padding: 0.95rem 0;
+        border-bottom: 1px dashed rgba(133, 45, 21, 0.12);
+    }
+
+    .summary-line:last-child {
+        border-bottom: 0;
     }
 
     .summary-total {
-        border-top: 1px dashed #d9be97;
-        padding-top: 0.6rem;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 800;
-        color: #64251d;
+        color: var(--primario-profundo);
+    }
+
+    .checkout-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(255, 232, 184, 0.82));
+        color: #5f2b00;
+        font-weight: 700;
+    }
+
+    @media (max-width: 1199.98px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-box {
+            position: static;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    <div class="col-xl-8">
-        <div class="card checkout-card">
-            <div class="card-body p-4 p-lg-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-4 bg-dark text-white">
-                        <i class="bi bi-shop"></i>
-                        <span class="fw-bold">Antojópolis</span>
-                    </div>
-                    <span class="badge text-bg-warning">Este pedido suma puntos a tu cuenta</span>
-                </div>
-                <h3 class="fw-bold">Confirmar pedido</h3>
-                <p class="text-muted">Revisa tu orden y elige el tipo de entrega para sumar puntos y beneficios.</p>
-
-                <div class="table-responsive mb-3">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th class="text-end">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in productos %}
-                                <tr class="order-row">
-                                    <td>{{ item.producto.nombre }}</td>
-                                    <td>{{ item.cantidad }}</td>
-                                    <td class="text-end">${{ item.subtotal|floatformat:2 }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <form method="post" id="form-checkout">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Tipo de pedido</label>
-                        <select name="tipo" class="form-select" required>
-                            <option value="">Selecciona</option>
-                            <option value="Local">Comer en el restaurante</option>
-                            <option value="Domicilio">Entrega a domicilio</option>
-                        </select>
-                    </div>
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <a href="{% url 'ver_carrito' %}" class="btn btn-outline-dark">Volver</a>
-                        <button type="submit" id="btn-confirmar-pedido" class="btn btn-main">Confirmar pedido</button>
-                    </div>
-                </form>
-            </div>
+<section class="page-banner mb-4">
+    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end">
+        <div>
+            <span class="eyebrow"><i class="bi bi-credit-card"></i>Checkout</span>
+            <h1 class="section-heading mb-2">Confirma tu pedido y conviértelo en puntos, nivel y recompensas.</h1>
+            <p class="mb-0" style="max-width: 760px; color: rgba(255, 244, 229, 0.86);">Este paso mantiene la experiencia elegante y clara: revisas tu orden, eliges el tipo de entrega y cierras la compra con confianza.</p>
         </div>
+        <span class="metric-chip"><i class="bi bi-award"></i>+{{ puntos_estimados }} puntos estimados</span>
     </div>
+</section>
 
-    <div class="col-xl-4">
-        <div class="summary-box">
-            <h6 class="fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Resumen de compra</h6>
-            <div class="summary-line">
-                <span>Productos</span>
-                <strong>{{ productos|length }}</strong>
+<div class="checkout-grid">
+    <section class="surface-panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+            <div>
+                <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-shop"></i>Antojopolis</span>
+                <h2 class="h3 mb-1">Confirmar pedido</h2>
+                <p class="text-muted mb-0">Revisa tu orden y elige el tipo de entrega para cerrar la compra.</p>
             </div>
-            <div class="summary-line">
-                <span>Programa fidelidad</span>
-                <strong>Activo</strong>
-            </div>
-            <div class="summary-line">
-                <span>Puntos estimados</span>
-                <strong>+{{ puntos_estimados }}</strong>
-            </div>
-            <div class="summary-line summary-total">
-                <span>Total estimado</span>
-                <span>${{ total|floatformat:2 }}</span>
-            </div>
-            <p class="small text-muted mb-0 mt-2">El total final puede incluir promociones o premios activos.</p>
+            <span class="checkout-badge"><i class="bi bi-stars"></i>Este pedido suma puntos a tu cuenta</span>
         </div>
-    </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in productos %}
+                        <tr>
+                            <td>{{ item.producto.nombre }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td class="text-end fw-bold">${{ item.subtotal|floatformat:2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" id="form-checkout">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tipo de pedido</label>
+                <select name="tipo" class="form-select" required>
+                    <option value="">Selecciona</option>
+                    <option value="Local">Comer en el restaurante</option>
+                    <option value="Domicilio">Entrega a domicilio</option>
+                </select>
+            </div>
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+                <a href="{% url 'ver_carrito' %}" class="btn btn-outline-dark">Volver</a>
+                <button type="submit" id="btn-confirmar-pedido" class="btn btn-main">Confirmar pedido</button>
+            </div>
+        </form>
+    </section>
+
+    <aside class="surface-panel summary-box">
+        <span class="eyebrow text-dark" style="background: rgba(245, 158, 11, 0.16); color: var(--primario-profundo);"><i class="bi bi-receipt"></i>Resumen</span>
+        <h2 class="h4 mb-2">Compra lista para pasar a cocina</h2>
+        <div class="summary-line">
+            <span>Productos</span>
+            <strong>{{ productos|length }}</strong>
+        </div>
+        <div class="summary-line">
+            <span>Programa fidelidad</span>
+            <strong>Activo</strong>
+        </div>
+        <div class="summary-line">
+            <span>Puntos estimados</span>
+            <strong>+{{ puntos_estimados }}</strong>
+        </div>
+        <div class="summary-line summary-total">
+            <span>Total estimado</span>
+            <span>${{ total|floatformat:2 }}</span>
+        </div>
+        <p class="small text-muted mb-0 mt-3">El total final puede incluir promociones o premios activos de tu perfil.</p>
+    </aside>
 </div>
 
 {% if tiene_giro_bienvenida_pendiente %}
 <div class="modal fade" id="modalRuletaPendiente" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header border-0">
                 <h5 class="modal-title">Tienes un giro pendiente</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 Antes de pagar, puedes reclamar tu giro de bienvenida en la ruleta para obtener puntos o descuento.
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
                 <a href="{% url 'mi_perfil' %}" class="btn btn-outline-dark">Ir a la ruleta</a>
                 <button type="button" id="btn-continuar-checkout" class="btn btn-main">Continuar con el pago</button>
             </div>

@@ -15,91 +15,118 @@
     }
 
     .register-shell {
-        max-width: 720px;
+        max-width: 1120px;
         margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+        gap: 1.5rem;
     }
 
-    .register-note {
-        border: 1px solid #e4d1b2;
-        border-radius: 14px;
-        background: #fff8ec;
-        padding: 0.75rem;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
+    .register-benefit {
+        padding: 1rem;
+        border-radius: 22px;
+        background: rgba(255, 245, 232, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: rgba(255, 244, 229, 0.92);
+    }
+
+    .register-benefit strong {
+        display: block;
+        color: #fffdf9;
+        font-size: 1.35rem;
+        margin-bottom: 0.25rem;
+    }
+
+    @media (max-width: 991.98px) {
+        .register-shell {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="register-shell">
-        <div class="register-note d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-stars me-1"></i>Empieza tu plan de beneficios</span>
+    <section class="page-banner">
+        <span class="eyebrow"><i class="bi bi-stars"></i>Empieza tu plan de beneficios</span>
+        <h1 class="section-heading mb-2">Crea tu cuenta y convierte cada pedido en una relación con la marca.</h1>
+        <p class="mb-4" style="max-width: 680px; color: rgba(255, 244, 229, 0.86);">Aquí entra tanto quien ama un plato especial como quien vuelve por su perro caliente favorito. Todo suma puntos, recompensas y acceso a promociones mejores.</p>
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <div class="register-benefit"><strong>Puntos</strong><span>Acumulas con cada pedido y subes de nivel.</span></div>
+            </div>
+            <div class="col-sm-6">
+                <div class="register-benefit"><strong>Beneficios</strong><span>Promociones, ruleta y descuentos se activan desde tu perfil.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="surface-panel">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-person-plus"></i>Nueva cuenta</span>
             <a href="{% url 'login' %}" class="small">Ya tengo cuenta</a>
         </div>
 
-        <div class="card border-0 shadow-lg rounded-4">
-            <div class="card-body p-4 p-md-5">
-                <h3 class="fw-bold mb-2">Crea tu cuenta</h3>
-                <p class="text-muted mb-4">Empieza a acumular puntos y desbloquear beneficios.</p>
+        <h2 class="h3 mb-2">Crea tu cuenta</h2>
+        <p class="text-muted mb-4">Empieza a acumular puntos y desbloquear beneficios desde tu primera compra.</p>
 
-                <form method="post">
-                    {% csrf_token %}
+        <form method="post">
+            {% csrf_token %}
 
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            Revisa los campos marcados.
-                        </div>
-                    {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Revisa los campos marcados.
+                </div>
+            {% endif %}
 
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        {{ form.first_name }}
-                        {% for error in form.first_name.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Correo</label>
-                        {{ form.email }}
-                        <div class="form-text">Debe tener formato valido, por ejemplo: nombre@correo.com.</div>
-                        {% for error in form.email.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Contrasena</label>
-                        {{ form.password1 }}
-                        <div class="form-text">Minimo 6 caracteres.</div>
-                        {% for error in form.password1.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Confirmar contrasena</label>
-                        {{ form.password2 }}
-                        {% for error in form.password2.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">No soy un robot</label>
-                        <div class="captcha-wrap overflow-auto">
-                            {{ form.captcha }}
-                        </div>
-                        {% for error in form.captcha.errors %}
-                            <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-
-                    {% for error in form.non_field_errors %}
-                        <div class="text-danger small mb-2">{{ error }}</div>
-                    {% endfor %}
-
-                    <button type="submit" class="btn btn-main w-100">Crear cuenta</button>
-                </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre</label>
+                {{ form.first_name }}
+                {% for error in form.first_name.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
             </div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Correo</label>
+                {{ form.email }}
+                <div class="form-text">Debe tener formato valido, por ejemplo: nombre@correo.com.</div>
+                {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Contrasena</label>
+                {{ form.password1 }}
+                <div class="form-text">Minimo 6 caracteres.</div>
+                {% for error in form.password1.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Confirmar contrasena</label>
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">No soy un robot</label>
+                <div class="captcha-wrap overflow-auto">
+                    {{ form.captcha }}
+                </div>
+                {% for error in form.captcha.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            {% for error in form.non_field_errors %}
+                <div class="text-danger small mb-2">{{ error }}</div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-main w-100">Crear cuenta</button>
+        </form>
+    </section>
 </div>
 {% endblock %}
 

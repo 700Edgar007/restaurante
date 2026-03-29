@@ -6,286 +6,385 @@
     <title>{% block title %}Antojopolis | Fidelizacion{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Domine:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --fondo-1: #f5f3ee;
-            --fondo-2: #fcfbf8;
-            --primario: #7b3f34;
-            --primario-oscuro: #5e2c22;
-            --texto: #2d2724;
-            --acento: #cda46a;
-            --verde: #3e7b5b;
-            --blanco: #ffffff;
+            --fondo-base: #f7efe5;
+            --fondo-suave: #fff7ef;
+            --fondo-panel: rgba(255, 250, 243, 0.88);
+            --primario: #b42318;
+            --primario-oscuro: #7f1d1d;
+            --primario-profundo: #5f1616;
+            --secundario: #f59e0b;
+            --secundario-suave: #fdd067;
+            --acento: #d97706;
+            --texto: #311d18;
+            --texto-suave: #73584d;
+            --borde: rgba(133, 45, 21, 0.12);
+            --sombra-suave: 0 16px 40px rgba(93, 28, 18, 0.08);
+            --sombra-media: 0 24px 55px rgba(110, 33, 20, 0.14);
+            --sombra-fuerte: 0 26px 60px rgba(93, 28, 18, 0.2);
+            --radio-xl: 28px;
+            --radio-lg: 20px;
+            --radio-md: 14px;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(180, 35, 24, 0.35) rgba(255, 255, 255, 0.4);
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             color: var(--texto);
-            background: linear-gradient(180deg, var(--fondo-2), var(--fondo-1));
             min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(244, 121, 32, 0.16), transparent 28%),
+                radial-gradient(circle at top right, rgba(180, 35, 24, 0.14), transparent 22%),
+                radial-gradient(circle at bottom center, rgba(245, 158, 11, 0.14), transparent 24%),
+                linear-gradient(180deg, #fffaf4 0%, #f9f0e6 48%, #f5e8dd 100%);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5 {
-            letter-spacing: -0.2px;
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(18px);
+            opacity: 0.55;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 280px;
+            height: 280px;
+            top: 110px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(180, 35, 24, 0.28), transparent 68%);
+        }
+
+        body::after {
+            width: 320px;
+            height: 320px;
+            bottom: -120px;
+            left: -90px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.26), transparent 70%);
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .display-title,
+        .brand-title,
+        .sidebar-title,
+        .section-heading {
+            font-family: 'Domine', serif;
+            letter-spacing: -0.03em;
+        }
+
+        a {
+            color: var(--primario);
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--primario-oscuro);
         }
 
         .navbar-app {
-            background: linear-gradient(100deg, var(--primario), var(--primario-oscuro));
-            box-shadow: 0 4px 14px rgba(47, 37, 35, 0.14);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            padding: 1rem 0;
+            background: linear-gradient(120deg, rgba(95, 22, 22, 0.88), rgba(180, 35, 24, 0.92), rgba(223, 120, 32, 0.88));
+            backdrop-filter: blur(18px);
+            box-shadow: 0 12px 35px rgba(88, 26, 18, 0.22);
+            border-bottom: 1px solid rgba(255, 226, 180, 0.18);
         }
 
         .brand-title {
-            color: #fff;
-            font-weight: 800;
-            letter-spacing: 0.2px;
-            text-decoration: none;
-            font-size: 1.45rem;
-        }
-
-        .btn-nav {
-            border-radius: 12px;
-            padding: 0.45rem 0.9rem;
-            font-weight: 600;
-            font-size: 0.96rem;
-        }
-
-        .cart-top-btn {
-            border-radius: 12px;
-            padding: 0.45rem 0.8rem;
-            font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.75rem;
+            color: #fffaf4;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .brand-title i {
+            display: inline-flex;
+            width: 44px;
+            height: 44px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(255, 220, 145, 0.28), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            font-size: 1.15rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        }
+
+        .brand-copy {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-copy small {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.73rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 242, 221, 0.8);
+        }
+
+        .btn-nav,
+        .cart-top-btn,
+        .btn-main,
+        .btn-outline-dark,
+        .btn-warning,
+        .btn-light {
+            border-radius: 999px;
+            font-weight: 700;
+            padding: 0.7rem 1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-nav:hover,
+        .cart-top-btn:hover,
+        .btn-main:hover,
+        .btn-outline-dark:hover,
+        .btn-warning:hover,
+        .btn-light:hover {
+            transform: translateY(-1px);
         }
 
         .btn-main {
-            background: var(--primario);
-            color: #fff;
+            color: #fff8ef;
             border: 0;
-            border-radius: 12px;
-            box-shadow: 0 6px 14px rgba(94, 44, 34, 0.22);
+            background: linear-gradient(135deg, var(--primario), #d13e1a 55%, #e26618);
+            box-shadow: 0 14px 32px rgba(180, 35, 24, 0.26);
         }
 
         .btn-main:hover {
-            background: var(--primario-oscuro);
-            color: #fff;
+            color: #fffaf4;
+            box-shadow: 0 18px 35px rgba(180, 35, 24, 0.34);
         }
 
-        .card {
-            border-radius: 18px;
-            border: 1px solid #ece2d5;
-            box-shadow: 0 8px 20px rgba(73, 46, 34, 0.07);
+        .btn-outline-dark {
+            color: var(--primario-profundo);
+            border: 1px solid rgba(127, 29, 29, 0.2);
+            background: rgba(255, 250, 244, 0.72);
         }
 
-        .table > :not(caption) > * > * {
-            border-bottom-color: #efe3d5;
+        .btn-outline-dark:hover {
+            color: #fff8ef;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--primario-profundo), var(--primario));
+            box-shadow: 0 12px 28px rgba(95, 22, 22, 0.18);
         }
 
-        .alert {
-            border-radius: 12px;
-            border: 1px solid #e6d9c9;
+        .btn-light {
+            color: var(--primario-profundo);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 249, 241, 0.92);
         }
 
-        .form-control,
-        .form-select {
-            border-radius: 12px;
-            border-color: #deceb8;
+        .btn-warning {
+            color: #5f2b00;
+            border: 1px solid rgba(255, 222, 163, 0.2);
+            background: linear-gradient(135deg, #ffd580, #f8b938);
+            box-shadow: 0 12px 28px rgba(245, 158, 11, 0.24);
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #cda46a;
-            box-shadow: 0 0 0 0.18rem rgba(205, 164, 106, 0.2);
+        .cart-top-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            background: linear-gradient(135deg, rgba(255, 250, 243, 0.96), rgba(255, 232, 184, 0.95));
+            color: var(--primario-profundo);
+            border: 1px solid rgba(255, 220, 162, 0.22);
+            box-shadow: 0 14px 28px rgba(88, 26, 18, 0.15);
         }
 
         .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.85rem;
             border-radius: 999px;
-            padding: 0.25rem 0.75rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #fff9ef;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.7rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #fff9f4;
+            background: linear-gradient(135deg, #8f1212, #d43a17, #eb9f0d);
+            box-shadow: 0 8px 18px rgba(180, 35, 24, 0.24);
+            transition: transform 0.22s ease;
+        }
+
+        .badge-pill.bump {
+            transform: scale(1.16);
         }
 
         .layout-sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 86px;
+            width: 94px;
             height: 100vh;
-            border: 0;
-            border-right: 1px solid #e6cfac;
-            box-shadow: 0 14px 30px rgba(61, 35, 22, 0.18);
-            background: linear-gradient(180deg, #fffaf1 0%, #f2e4cf 68%, #ead6ba 100%);
             z-index: 1020;
-            transition: width 0.26s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
             overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 250, 243, 0.92), rgba(249, 231, 204, 0.95) 62%, rgba(244, 210, 165, 0.96) 100%);
+            border-right: 1px solid rgba(181, 67, 36, 0.12);
+            box-shadow: 0 20px 42px rgba(98, 30, 19, 0.14);
+            backdrop-filter: blur(18px);
+            transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
         }
 
         .sidebar-inner {
-            padding: 88px 0.9rem 1rem;
-            height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.8rem;
+            height: 100%;
+            padding: 96px 0.95rem 1rem;
         }
 
         .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
             padding: 0 0.35rem;
         }
 
         .sidebar-title {
-            font-weight: 800;
-            font-size: 1.05rem;
-            color: #5c271f;
-            white-space: nowrap;
             margin: 0;
+            font-size: 1rem;
+            color: var(--primario-profundo);
+        }
+
+        .menu-title {
+            margin: 0.2rem 0.55rem 0;
+            color: rgba(95, 22, 22, 0.72);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
         }
 
         .side-link {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            gap: 0.5rem;
-            border-radius: 12px;
-            padding: 0.58rem 0.7rem;
+            gap: 0.75rem;
+            justify-content: center;
+            width: 100%;
+            padding: 0.78rem;
+            border: 1px solid transparent;
+            border-radius: 18px;
+            background: transparent;
             color: var(--texto);
             text-decoration: none;
-            font-weight: 600;
-            border: 1px solid transparent;
-            transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         .side-link:hover {
-            background: #f2e7d7;
-            border-color: #ddc9ac;
-            color: var(--primario-oscuro);
+            color: var(--primario-profundo);
+            border-color: rgba(180, 35, 24, 0.12);
+            background: linear-gradient(135deg, rgba(255, 250, 243, 0.9), rgba(250, 220, 171, 0.55));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 10px 22px rgba(150, 53, 22, 0.08);
             transform: translateX(2px);
         }
 
         .side-link.active {
-            background: #ead8bc;
-            border-color: #d4b890;
-            color: var(--primario-oscuro);
+            color: #fff8ef;
+            background: linear-gradient(135deg, var(--primario-profundo), var(--primario), #de7415);
+            border-color: transparent;
+            box-shadow: 0 14px 28px rgba(180, 35, 24, 0.22);
         }
 
         .side-link i {
-            font-size: 1.05rem;
             min-width: 1.2rem;
             text-align: center;
-        }
-
-        .side-text {
-            white-space: nowrap;
+            font-size: 1.05rem;
         }
 
         .side-end {
             margin-left: auto;
         }
 
-        .menu-title {
-            font-size: 0.75rem;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #8b6a49;
-            margin: 0.25rem 0.45rem;
-        }
-
-        .side-submenu {
-            margin: 0.25rem 0 0.4rem 0.45rem;
-            padding-left: 0.65rem;
-            border-left: 2px solid #e1c8a4;
-        }
-
-        .side-submenu .side-link {
-            padding: 0.45rem 0.6rem;
-            font-size: 0.92rem;
-            border-radius: 10px;
-        }
-
-        .badge-pill {
-            border-radius: 999px;
-            padding: 0.15rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: #8b3a2e;
-            color: #fff;
-            transition: transform 0.22s ease;
-        }
-
-        .badge-pill.bump {
-            transform: scale(1.2);
-        }
-
-        .app-main {
-            padding-left: 106px;
-            transition: padding-left 0.24s ease;
-        }
-
-        .page-shell {
-            max-width: 1650px;
-            margin: 0 auto;
-        }
-
-        .sidebar-account {
-            margin-top: auto;
-            border-top: 1px solid #dfc4a0;
-            padding: 0.85rem 0.45rem 0;
-            color: #6c4a33;
-            font-size: 0.86rem;
-        }
-
-        body.sidebar-expanded .layout-sidebar,
-        .layout-sidebar:hover {
-            width: 300px;
-            box-shadow: 0 18px 34px rgba(61, 35, 22, 0.22);
-        }
-
-        body.sidebar-expanded .app-main,
-        .layout-sidebar:hover ~ .app-main {
-            padding-left: 320px;
-        }
-
-        .sidebar-title,
-        .menu-title,
         .side-text,
         .side-end,
+        .menu-title,
+        .sidebar-title,
         .side-submenu,
         .sidebar-account {
             display: none;
         }
 
-        .side-link {
-            justify-content: center;
-            padding: 0.62rem;
+        .side-submenu {
+            margin: 0.15rem 0 0.4rem 0.6rem;
+            padding-left: 0.8rem;
+            border-left: 1px solid rgba(180, 35, 24, 0.18);
         }
 
-        body.sidebar-expanded .sidebar-title,
-        body.sidebar-expanded .menu-title,
-        body.sidebar-expanded .side-text,
-        body.sidebar-expanded .side-end,
-        body.sidebar-expanded .side-submenu,
-        body.sidebar-expanded .sidebar-account,
-        .layout-sidebar:hover .sidebar-title,
-        .layout-sidebar:hover .menu-title,
-        .layout-sidebar:hover .side-text,
-        .layout-sidebar:hover .side-end,
-        .layout-sidebar:hover .side-submenu,
-        .layout-sidebar:hover .sidebar-account {
-            display: block;
+        .side-submenu .side-link {
+            font-size: 0.92rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 14px;
+        }
+
+        .sidebar-account {
+            margin-top: auto;
+            padding: 1rem 0.55rem 0;
+            border-top: 1px solid rgba(133, 45, 21, 0.12);
+            font-size: 0.86rem;
+            color: var(--texto-suave);
+        }
+
+        body.sidebar-expanded .layout-sidebar,
+        .layout-sidebar:hover {
+            width: 308px;
+            box-shadow: 0 26px 48px rgba(98, 30, 19, 0.18);
+        }
+
+        body.sidebar-expanded .app-main,
+        .layout-sidebar:hover ~ .app-main {
+            padding-left: 330px;
         }
 
         body.sidebar-expanded .side-link,
         .layout-sidebar:hover .side-link {
             justify-content: flex-start;
+        }
+
+        body.sidebar-expanded .side-text,
+        body.sidebar-expanded .side-end,
+        body.sidebar-expanded .menu-title,
+        body.sidebar-expanded .sidebar-title,
+        body.sidebar-expanded .side-submenu,
+        body.sidebar-expanded .sidebar-account,
+        .layout-sidebar:hover .side-text,
+        .layout-sidebar:hover .side-end,
+        .layout-sidebar:hover .menu-title,
+        .layout-sidebar:hover .sidebar-title,
+        .layout-sidebar:hover .side-submenu,
+        .layout-sidebar:hover .sidebar-account {
+            display: block;
         }
 
         body:not(.sidebar-expanded) .side-submenu {
@@ -299,20 +398,223 @@
         body:not(.sidebar-expanded) .layout-sidebar .side-link[data-label]:hover::after {
             content: attr(data-label);
             position: absolute;
-            left: calc(100% + 10px);
+            left: calc(100% + 12px);
             top: 50%;
             transform: translateY(-50%);
-            background: #3f261f;
-            color: #fff;
-            font-size: 0.75rem;
-            padding: 0.22rem 0.45rem;
-            border-radius: 8px;
+            padding: 0.35rem 0.6rem;
+            border-radius: 10px;
+            color: #fff8ef;
+            background: rgba(63, 21, 18, 0.95);
+            font-size: 0.77rem;
             white-space: nowrap;
             z-index: 1030;
+            box-shadow: 0 10px 20px rgba(63, 21, 18, 0.18);
+        }
+
+        .app-main {
+            position: relative;
+            z-index: 1;
+            padding-left: 116px;
+            transition: padding-left 0.24s ease;
+        }
+
+        .page-shell {
+            max-width: 1680px;
+            margin: 0 auto;
+        }
+
+        .app-main > .page-shell {
+            padding-top: 1.2rem;
+        }
+
+        .page-banner,
+        .surface-panel,
+        .glass-panel,
+        .card {
+            border: 1px solid rgba(133, 45, 21, 0.08);
+            box-shadow: var(--sombra-suave);
+        }
+
+        .card {
+            border-radius: var(--radio-lg);
+            background: rgba(255, 250, 244, 0.9);
+        }
+
+        .surface-panel {
+            background: linear-gradient(180deg, rgba(255, 251, 246, 0.96), rgba(255, 244, 230, 0.9));
+            border-radius: var(--radio-xl);
+            padding: 1.5rem;
+        }
+
+        .glass-panel {
+            background: rgba(255, 252, 247, 0.74);
+            border-radius: var(--radio-xl);
+            backdrop-filter: blur(18px);
+            padding: 1.5rem;
+        }
+
+        .page-banner {
+            position: relative;
+            overflow: hidden;
+            border-radius: 34px;
+            padding: 2rem;
+            background:
+                linear-gradient(135deg, rgba(95, 22, 22, 0.97), rgba(180, 35, 24, 0.92) 46%, rgba(234, 129, 29, 0.88)),
+                radial-gradient(circle at top left, rgba(255, 225, 168, 0.24), transparent 34%);
+            color: #fffaf4;
+            box-shadow: var(--sombra-fuerte);
+        }
+
+        .page-banner::before,
+        .page-banner::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            opacity: 0.26;
+            pointer-events: none;
+        }
+
+        .page-banner::before {
+            width: 240px;
+            height: 240px;
+            top: -90px;
+            right: -70px;
+            background: radial-gradient(circle, rgba(255, 238, 198, 0.55), transparent 68%);
+        }
+
+        .page-banner::after {
+            width: 200px;
+            height: 200px;
+            bottom: -90px;
+            left: -70px;
+            background: radial-gradient(circle, rgba(253, 208, 103, 0.56), transparent 70%);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 0.85rem;
+            padding: 0.42rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            color: rgba(255, 247, 234, 0.92);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 3.35rem);
+            line-height: 1;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-subtitle {
+            max-width: 700px;
+            color: var(--texto-suave);
+            font-size: 1.02rem;
+            line-height: 1.7;
+        }
+
+        .metric-chip,
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.58rem 0.95rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .metric-chip {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff8ef;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .status-pill {
+            background: linear-gradient(135deg, rgba(255, 238, 203, 0.98), rgba(253, 208, 103, 0.9));
+            color: #5f2b00;
+            box-shadow: 0 10px 18px rgba(245, 158, 11, 0.18);
+        }
+
+        .alert {
+            border-radius: 18px;
+            border: 1px solid rgba(180, 35, 24, 0.1);
+            box-shadow: 0 12px 22px rgba(97, 27, 21, 0.08);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(255, 250, 244, 0.95), rgba(255, 232, 204, 0.86));
+            color: var(--texto);
+        }
+
+        .table {
+            --bs-table-bg: transparent;
+        }
+
+        .table > :not(caption) > * > * {
+            border-bottom-color: rgba(133, 45, 21, 0.08);
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 16px;
+            min-height: 48px;
+            color: var(--texto);
+            border-color: rgba(133, 45, 21, 0.1);
+            background: rgba(255, 253, 250, 0.86);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control::placeholder {
+            color: #9a7f72;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: rgba(180, 35, 24, 0.36);
+            box-shadow: 0 0 0 0.22rem rgba(180, 35, 24, 0.14);
+            background: #fffdf9;
+        }
+
+        .offcanvas {
+            background: linear-gradient(180deg, rgba(255, 252, 246, 0.98), rgba(248, 234, 211, 0.98));
+            border-right: 1px solid rgba(180, 35, 24, 0.08);
         }
 
         .offcanvas-links .side-link {
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.35rem;
+            justify-content: flex-start;
+        }
+
+        @keyframes softReveal {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-shell > * {
+            animation: softReveal 0.6s ease both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         @media (max-width: 991.98px) {
@@ -327,18 +629,50 @@
             .page-shell {
                 max-width: 100%;
             }
+
+            .navbar-app {
+                padding: 0.85rem 0;
+            }
+
+            .brand-title {
+                font-size: 1.2rem;
+            }
+
+            .brand-title i {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .page-banner,
+            .surface-panel,
+            .glass-panel {
+                padding: 1.25rem;
+                border-radius: 24px;
+            }
+
+            .section-heading {
+                font-size: 2rem;
+            }
         }
     </style>
     {% block extra_styles %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-app py-3">
+    <nav class="navbar navbar-expand-lg navbar-app">
         <div class="container">
-            <a href="{% url 'lista_productos' %}" class="brand-title"><i class="bi bi-shop me-2"></i>Antojópolis</a>
+            <a href="{% url 'lista_productos' %}" class="brand-title">
+                <i class="bi bi-shop"></i>
+                <span class="brand-copy">
+                    Antojopolis
+                    <small>Cocina latina contemporanea</small>
+                </span>
+            </a>
             <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
                 {% if user.is_authenticated %}
-                    <span class="chip d-none d-md-inline">{{ user.username }}</span>
-                    <a href="{% url 'ver_carrito' %}" class="btn btn-light cart-top-btn">
+                    <span class="chip d-none d-md-inline"><i class="bi bi-person-circle"></i>{{ user.username }}</span>
+                    <a href="{% url 'ver_carrito' %}" class="btn cart-top-btn">
                         <i class="bi bi-basket2"></i>
                         Carrito
                         <span class="badge-pill cart-badge-global">{{ cart_total_items }}</span>
@@ -351,7 +685,7 @@
                         <button type="submit" class="btn btn-light btn-nav"><i class="bi bi-box-arrow-right"></i> Salir</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'ver_carrito' %}" class="btn btn-light cart-top-btn">
+                    <a href="{% url 'ver_carrito' %}" class="btn cart-top-btn">
                         <i class="bi bi-basket2"></i>
                         Carrito
                         <span class="badge-pill cart-badge-global">{{ cart_total_items }}</span>
@@ -369,10 +703,10 @@
     <aside class="layout-sidebar">
         <div class="sidebar-inner">
             <div class="sidebar-header">
-                <p class="sidebar-title"><i class="bi bi-layout-sidebar me-2"></i>Navegacion</p>
+                <p class="sidebar-title">Ruta de sabores</p>
             </div>
 
-            <p class="menu-title">Menu principal</p>
+            <p class="menu-title">Carta</p>
             <a href="{% url 'lista_productos' %}" class="side-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}" data-label="Productos">
                 <i class="bi bi-grid"></i>
                 <span class="side-text">Productos</span>
@@ -395,7 +729,7 @@
             </div>
 
             {% if user.is_authenticated %}
-                <p class="menu-title">Cuenta</p>
+                <p class="menu-title">Fidelizacion</p>
                 <a href="{% url 'mi_perfil' %}" class="side-link {% if request.resolver_match.url_name == 'mi_perfil' %}active{% endif %}" data-label="Mi perfil">
                     <i class="bi bi-person-circle"></i>
                     <span class="side-text">Mi perfil</span>
@@ -405,6 +739,7 @@
                     <span class="side-text">Ranking</span>
                 </a>
                 {% if user.is_staff or user.is_superuser %}
+                    <p class="menu-title">Gestion</p>
                     <a href="{% url 'panel_gestion' %}" class="side-link {% if request.resolver_match.url_name == 'panel_gestion' %}active{% endif %}" data-label="Panel gestion">
                         <i class="bi bi-speedometer2"></i>
                         <span class="side-text">Panel gestion</span>
@@ -417,7 +752,7 @@
             {% endif %}
 
             <div class="sidebar-account">
-                Navegacion rapida de Antojópolis.
+                Una cocina que mezcla antojos callejeros, platos de autor y beneficios que se sienten tan buenos como saben.
             </div>
         </div>
     </aside>
@@ -440,14 +775,14 @@
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="menuMovil" aria-labelledby="menuMovilLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="menuMovilLabel">Navegacion</h5>
+            <h5 class="offcanvas-title" id="menuMovilLabel">Antojopolis</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body offcanvas-links">
             <a href="{% url 'lista_productos' %}" class="side-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}">
                 <span><i class="bi bi-grid me-2"></i>Productos</span>
             </a>
-            <div class="ps-2 border-start border-2 ms-2 mb-2">
+            <div class="ps-2 border-start border-2 ms-2 mb-2" style="border-color: rgba(180, 35, 24, 0.14) !important;">
                 <a href="{% url 'lista_productos' %}" class="side-link {% if request.resolver_match.url_name == 'lista_productos' %}active{% endif %}">
                     <span><i class="bi bi-shop me-2"></i>Carta local</span>
                 </a>

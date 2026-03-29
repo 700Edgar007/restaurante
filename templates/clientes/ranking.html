@@ -6,175 +6,159 @@
 <style>
     .podio {
         border: 0;
-        border-radius: 18px;
+        border-radius: 26px;
         color: #fff;
-        padding: 1rem;
-        min-height: 145px;
-        box-shadow: 0 12px 24px rgba(80, 30, 10, 0.2);
+        padding: 1.3rem;
+        min-height: 168px;
+        box-shadow: 0 18px 34px rgba(80, 30, 10, 0.16);
     }
 
-    .oro { background: linear-gradient(130deg, #d6a128, #f1c95f); }
-    .plata { background: linear-gradient(130deg, #8a96a1, #b8c2cb); }
-    .bronce { background: linear-gradient(130deg, #9b5d35, #c98f64); }
+    .oro { background: linear-gradient(135deg, #c5481f, #f59e0b, #f5d36b); }
+    .plata { background: linear-gradient(135deg, #8d5a46, #c58b76, #e6c4aa); }
+    .bronce { background: linear-gradient(135deg, #7f1d1d, #b45309, #d89d49); }
 
     .podio-row {
         align-items: end;
     }
 
-    .podio-oro { min-height: 185px; }
-    .podio-plata { min-height: 155px; }
-    .podio-bronce { min-height: 130px; }
+    .podio-oro { min-height: 220px; }
+    .podio-plata { min-height: 180px; }
+    .podio-bronce { min-height: 154px; }
 
     .avatar-mini {
-        width: 28px;
-        height: 28px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
-        margin-right: 6px;
-        border: 1px solid #e8cfad;
+        margin-right: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
         vertical-align: middle;
     }
 
-    .ranking-tabla tbody tr:nth-child(1) {
-        background: rgba(241, 201, 95, 0.18);
-    }
-
-    .ranking-tabla tbody tr:nth-child(2) {
-        background: rgba(184, 194, 203, 0.16);
-    }
-
-    .ranking-tabla tbody tr:nth-child(3) {
-        background: rgba(201, 143, 100, 0.15);
-    }
-
     .mini-kpi {
-        border: 1px solid #e1ccb0;
-        border-radius: 14px;
-        background: #fff8ec;
-        padding: 0.8rem;
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(255, 251, 246, 0.98), rgba(255, 236, 210, 0.94));
+        padding: 1rem;
         height: 100%;
     }
 
     .mini-kpi .k {
         font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.4px;
-        color: #8d6b4a;
+        letter-spacing: 0.12em;
+        color: var(--texto-suave);
+        font-weight: 700;
     }
 
     .mini-kpi .v {
-        font-size: 1.2rem;
+        font-size: 1.35rem;
         font-weight: 800;
-        color: #5e2a21;
+        color: var(--primario-profundo);
+    }
+
+    .ranking-tabla tbody tr:nth-child(1) {
+        background: rgba(245, 158, 11, 0.12);
+    }
+
+    .ranking-tabla tbody tr:nth-child(2) {
+        background: rgba(197, 139, 118, 0.12);
+    }
+
+    .ranking-tabla tbody tr:nth-child(3) {
+        background: rgba(180, 83, 9, 0.12);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="card border-0 rounded-4 shadow-sm">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="fw-bold mb-0">Tabla de posicion</h3>
-            <span class="badge text-bg-warning">Top clientes por consumo</span>
+<section class="page-banner mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+            <span class="eyebrow"><i class="bi bi-trophy"></i>Top clientes</span>
+            <h1 class="section-heading mb-2">El ranking convierte la fidelidad en escenario.</h1>
+            <p class="mb-0" style="max-width: 760px; color: rgba(255, 244, 229, 0.86);">Aquí se cruzan consumo, recurrencia y puntos para mostrar quién está más conectado con la experiencia Antojopolis.</p>
         </div>
-        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-            <p class="text-muted mb-0">Ranking por total comprado, pedidos completados y puntos.</p>
-            <form method="get" class="d-flex gap-2">
-                <select name="periodo" class="form-select form-select-sm">
-                    <option value="todo" {% if periodo == 'todo' %}selected{% endif %}>Historico</option>
-                    <option value="mes" {% if periodo == 'mes' %}selected{% endif %}>Ultimos 30 dias</option>
-                    <option value="semana" {% if periodo == 'semana' %}selected{% endif %}>Ultimos 7 dias</option>
-                </select>
-                <button class="btn btn-main btn-sm" type="submit">Filtrar</button>
-            </form>
-        </div>
+        <form method="get" class="d-flex gap-2">
+            <select name="periodo" class="form-select form-select-sm">
+                <option value="todo" {% if periodo == 'todo' %}selected{% endif %}>Historico</option>
+                <option value="mes" {% if periodo == 'mes' %}selected{% endif %}>Ultimos 30 dias</option>
+                <option value="semana" {% if periodo == 'semana' %}selected{% endif %}>Ultimos 7 dias</option>
+            </select>
+            <button class="btn btn-main btn-sm" type="submit">Filtrar</button>
+        </form>
+    </div>
+</section>
 
-        <div class="row g-3 my-3">
-            <div class="col-md-4">
-                <div class="mini-kpi">
-                    <div class="k">Clientes en ranking</div>
-                    <div class="v">{{ perfiles|length }}</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mini-kpi">
-                    <div class="k">Lider actual</div>
-                    <div class="v">{% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mini-kpi">
-                    <div class="k">Mayor consumo</div>
-                    <div class="v">{% if perfiles|length > 0 %}${{ perfiles.0.total_consumido }}{% else %}$0{% endif %}</div>
-                </div>
+<section class="surface-panel mb-4">
+    <div class="row g-3">
+        <div class="col-md-4"><div class="mini-kpi"><div class="k">Clientes en ranking</div><div class="v">{{ perfiles|length }}</div></div></div>
+        <div class="col-md-4"><div class="mini-kpi"><div class="k">Lider actual</div><div class="v">{% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}</div></div></div>
+        <div class="col-md-4"><div class="mini-kpi"><div class="k">Mayor consumo</div><div class="v">{% if perfiles|length > 0 %}${{ perfiles.0.total_consumido }}{% else %}$0{% endif %}</div></div></div>
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="row g-3 podio-row">
+        <div class="col-md-4">
+            <div class="podio plata podio-plata">
+                <div class="small text-uppercase fw-semibold">2do lugar</div>
+                <h3 class="h4 fw-bold mb-1 mt-2">{% if perfiles|length > 1 %}{{ perfiles.1.usuario.username }}{% else %}-{% endif %}</h3>
+                <div class="small">{% if perfiles|length > 1 %}${{ perfiles.1.total_consumido }}{% else %}Sin datos{% endif %}</div>
             </div>
         </div>
-
-        <div class="row g-3 my-2 podio-row">
-            <div class="col-md-4">
-                <div class="podio plata podio-plata">
-                    <div class="small">2do lugar</div>
-                    <h5 class="fw-bold mb-1">
-                        {% if perfiles|length > 1 %}{{ perfiles.1.usuario.username }}{% else %}-{% endif %}
-                    </h5>
-                    <div class="small">
-                        {% if perfiles|length > 1 %}${{ perfiles.1.total_consumido }}{% else %}Sin datos{% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="podio oro podio-oro">
-                    <div class="small">1er lugar</div>
-                    <h5 class="fw-bold mb-1">
-                        {% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}
-                    </h5>
-                    <div class="small">
-                        {% if perfiles|length > 0 %}${{ perfiles.0.total_consumido }}{% else %}Sin datos{% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="podio bronce podio-bronce">
-                    <div class="small">3er lugar</div>
-                    <h5 class="fw-bold mb-1">
-                        {% if perfiles|length > 2 %}{{ perfiles.2.usuario.username }}{% else %}-{% endif %}
-                    </h5>
-                    <div class="small">
-                        {% if perfiles|length > 2 %}${{ perfiles.2.total_consumido }}{% else %}Sin datos{% endif %}
-                    </div>
-                </div>
+        <div class="col-md-4">
+            <div class="podio oro podio-oro">
+                <div class="small text-uppercase fw-semibold">1er lugar</div>
+                <h3 class="h3 fw-bold mb-1 mt-2">{% if perfiles|length > 0 %}{{ perfiles.0.usuario.username }}{% else %}-{% endif %}</h3>
+                <div class="small">{% if perfiles|length > 0 %}${{ perfiles.0.total_consumido }}{% else %}Sin datos{% endif %}</div>
             </div>
         </div>
-
-        <div class="table-responsive">
-            <table class="table align-middle ranking-tabla">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Cliente</th>
-                        <th>Pedidos</th>
-                        <th>Total comprado</th>
-                        <th>Puntos</th>
-                        <th>Nivel</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for perfil in perfiles %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td><img src="{{ perfil.avatar_url }}" alt="{{ perfil.usuario.username }}" class="avatar-mini">{{ perfil.usuario.username }}</td>
-                            <td>{{ perfil.pedidos_completados }}</td>
-                            <td>${{ perfil.total_consumido }}</td>
-                            <td>{{ perfil.puntos }}</td>
-                            <td>{{ perfil.nivel }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6">No hay datos suficientes para mostrar ranking.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-md-4">
+            <div class="podio bronce podio-bronce">
+                <div class="small text-uppercase fw-semibold">3er lugar</div>
+                <h3 class="h4 fw-bold mb-1 mt-2">{% if perfiles|length > 2 %}{{ perfiles.2.usuario.username }}{% else %}-{% endif %}</h3>
+                <div class="small">{% if perfiles|length > 2 %}${{ perfiles.2.total_consumido }}{% else %}Sin datos{% endif %}</div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="surface-panel">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-3">
+        <div>
+            <span class="eyebrow text-dark" style="background: rgba(180, 35, 24, 0.08); color: var(--primario-profundo);"><i class="bi bi-table"></i>Tabla completa</span>
+            <h2 class="h3 mb-1">Posiciones por consumo, pedidos y puntos</h2>
+            <p class="text-muted mb-0">El podio muestra a los más activos, y la tabla deja ver el panorama completo.</p>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle ranking-tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Pedidos</th>
+                    <th>Total comprado</th>
+                    <th>Puntos</th>
+                    <th>Nivel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for perfil in perfiles %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><img src="{{ perfil.avatar_url }}" alt="{{ perfil.usuario.username }}" class="avatar-mini">{{ perfil.usuario.username }}</td>
+                        <td>{{ perfil.pedidos_completados }}</td>
+                        <td>${{ perfil.total_consumido }}</td>
+                        <td>{{ perfil.puntos }}</td>
+                        <td>{{ perfil.nivel }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No hay datos suficientes para mostrar ranking.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}
